@@ -159,6 +159,14 @@ func TestTuple_Subtract(t1 *testing.T) {
 			},
 			want: NewVector(-2, -4, -6),
 		},
+		{
+			name:   "subtracting a vector from the zero vector",
+			fields: fields{0, 0, 0, 0},
+			args: args{
+				NewVector(1, -2, 3),
+			},
+			want: NewVector(-1, 2, -3),
+		},
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
@@ -170,6 +178,161 @@ func TestTuple_Subtract(t1 *testing.T) {
 			}
 			if got := t.Subtract(tt.args.a); !reflect.DeepEqual(got, tt.want) {
 				t1.Errorf("Subtract() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTuple_Negate(t1 *testing.T) {
+	type fields struct {
+		X float64
+		Y float64
+		Z float64
+		W float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   *Tuple
+	}{
+		{
+			name: "negating a tuple",
+			fields: fields{
+				X: 1,
+				Y: -2,
+				Z: 3,
+				W: -4,
+			},
+			want: &Tuple{
+				X: -1,
+				Y: 2,
+				Z: -3,
+				W: 4,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &Tuple{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+				Z: tt.fields.Z,
+				W: tt.fields.W,
+			}
+			if got := t.Negate(); !reflect.DeepEqual(got, tt.want) {
+				t1.Errorf("Negate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTuple_Multiply(t1 *testing.T) {
+	type fields struct {
+		X float64
+		Y float64
+		Z float64
+		W float64
+	}
+	type args struct {
+		a float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Tuple
+	}{
+		{
+			name: "multiplying a tuple by a scalar",
+			fields: fields{
+				X: 1,
+				Y: -2,
+				Z: 3,
+				W: -4,
+			},
+			args: args{3.5},
+			want: &Tuple{
+				X: 3.5,
+				Y: -7,
+				Z: 10.5,
+				W: -14,
+			},
+		},
+		{
+			name: "multiplying a tuple by a fraction",
+			fields: fields{
+				X: 1,
+				Y: -2,
+				Z: 3,
+				W: -4,
+			},
+			args: args{0.5},
+			want: &Tuple{
+				X: 0.5,
+				Y: -1,
+				Z: 1.5,
+				W: -2,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &Tuple{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+				Z: tt.fields.Z,
+				W: tt.fields.W,
+			}
+			if got := t.Multiply(tt.args.a); !reflect.DeepEqual(got, tt.want) {
+				t1.Errorf("Multiply() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTuple_Divide(t1 *testing.T) {
+	type fields struct {
+		X float64
+		Y float64
+		Z float64
+		W float64
+	}
+	type args struct {
+		a float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Tuple
+	}{
+		{
+			name: "multiplying a tuple by a fraction",
+			fields: fields{
+				X: 1,
+				Y: -2,
+				Z: 3,
+				W: -4,
+			},
+			args: args{2},
+			want: &Tuple{
+				X: 0.5,
+				Y: -1,
+				Z: 1.5,
+				W: -2,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &Tuple{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+				Z: tt.fields.Z,
+				W: tt.fields.W,
+			}
+			if got := t.Divide(tt.args.a); !reflect.DeepEqual(got, tt.want) {
+				t1.Errorf("Divide() = %v, want %v", got, tt.want)
 			}
 		})
 	}

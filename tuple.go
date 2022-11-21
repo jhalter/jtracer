@@ -40,12 +40,42 @@ func (t *Tuple) Add(a *Tuple) *Tuple {
 	}
 }
 
-// Subtract substracts a tuple from this tuple
+// Subtract subtracts a tuple from this tuple
 func (t *Tuple) Subtract(a *Tuple) *Tuple {
 	return &Tuple{
 		t.X - a.X,
 		t.Y - a.Y,
 		t.Z - a.Z,
 		t.W - a.W,
+	}
+}
+
+// Negate negates this tuple, subtracting it from the zero tuple
+func (t *Tuple) Negate() *Tuple {
+	return &Tuple{
+		0 - t.X,
+		0 - t.Y,
+		0 - t.Z,
+		0 - t.W,
+	}
+}
+
+// Multiply multiplies a tuple from this tuple
+func (t *Tuple) Multiply(a float64) *Tuple {
+	return &Tuple{
+		t.X * a,
+		t.Y * a,
+		t.Z * a,
+		t.W * a,
+	}
+}
+
+// Divide multiplies a tuple from this tuple
+func (t *Tuple) Divide(a float64) *Tuple {
+	return &Tuple{
+		t.X / a,
+		t.Y / a,
+		t.Z / a,
+		t.W / a,
 	}
 }
