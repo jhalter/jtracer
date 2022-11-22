@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -149,10 +150,179 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			},
 			want: Tuple{1, 2, 3, 1},
 		},
+		{
+			name: "multiplying a point by a translation matrix",
+			m:    NewTranslation(5, -3, 2),
+			args: args{
+				*NewPoint(-3, 4, 5),
+			},
+			want: Tuple{2, 1, 7, 1},
+		},
+		{
+			name: "multiplying a point by the inverse of a translation matrix",
+			m: func() Matrix {
+				m := NewTranslation(5, -3, 2)
+				return m.Inverse()
+			}(),
+			args: args{
+				*NewPoint(-3, 4, 5),
+			},
+			want: Tuple{-8, 7, 3, 1},
+		},
+		{
+			name: "translation does not affect vectors",
+			m:    NewTranslation(5, -3, 2),
+			args: args{
+				*NewVector(-3, 4, 5),
+			},
+			want: Tuple{-3, 4, 5, 0},
+		},
+		{
+			name: "a scaling matrix applied to a point",
+			m:    Scaling(2, 3, 4),
+			args: args{
+				*NewPoint(-4, 6, 8),
+			},
+			want: Tuple{-8, 18, 32, 1},
+		},
+		{
+			name: "a scaling matrix applied to a vector",
+			m:    Scaling(2, 3, 4),
+			args: args{
+				*NewVector(-4, 6, 8),
+			},
+			want: Tuple{-8, 18, 32, 0},
+		},
+		{
+			name: "multiplying by  by the inverse of a scaling matrix",
+			m: func() Matrix {
+				m := Scaling(2, 3, 4)
+				return m.Inverse()
+			}(),
+			args: args{
+				*NewVector(-4, 6, 8),
+			},
+			want: Tuple{-2, 2, 2, 0},
+		},
+		{
+			name: "reflection is scaling by a negative value",
+			m:    Scaling(-1, 1, 1),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: Tuple{-2, 3, 4, 1},
+		},
+		{
+			name: "rotating a point half quarter around the x-axis",
+			m:    RotationX(math.Pi / 4),
+			args: args{
+				*NewPoint(0, 1, 0),
+			},
+			want: *NewPoint(0, math.Sqrt2/2, math.Sqrt2/2),
+		},
+		{
+			name: "rotating a point full quarter around the x-axis",
+			m:    RotationX(math.Pi / 2),
+			args: args{
+				*NewPoint(0, 1, 0),
+			},
+			want: *NewPoint(0, 0, 1),
+		},
+		{
+			name: "the inverse of an x-rotation rotates in the opposite direction",
+			m: func() Matrix {
+				m := RotationX(math.Pi / 4)
+				return m.Inverse()
+			}(),
+			args: args{
+				*NewPoint(0, 1, 0),
+			},
+			want: *NewPoint(0, math.Sqrt2/2, -math.Sqrt2/2),
+		},
+		{
+			name: "rotating a point half quarter around the y-axis",
+			m:    RotationY(math.Pi / 4),
+			args: args{
+				*NewPoint(0, 0, 1),
+			},
+			want: *NewPoint(math.Sqrt2/2, 0, math.Sqrt2/2),
+		},
+		{
+			name: "rotating a point full quarter around the y-axis",
+			m:    RotationY(math.Pi / 2),
+			args: args{
+				*NewPoint(0, 0, 1),
+			},
+			want: *NewPoint(1, 0, 0),
+		},
+		{
+			name: "rotating a point half quarter around the z-axis",
+			m:    RotationZ(math.Pi / 4),
+			args: args{
+				*NewPoint(0, 1, 0),
+			},
+			want: *NewPoint(-math.Sqrt2/2, math.Sqrt2/2, 0),
+		},
+		{
+			name: "rotating a point full quarter around the z-axis",
+			m:    RotationZ(math.Pi / 2),
+			args: args{
+				*NewPoint(0, 1, 0),
+			},
+			want: *NewPoint(-1, 0, 0),
+		},
+		{
+			name: "a shearing transformation moves x in proportion to y",
+			m:    Shearing(1, 0, 0, 0, 0, 0),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: *NewPoint(5, 3, 4),
+		},
+		{
+			name: "a shearing transformation moves x in proportion to z",
+			m:    Shearing(0, 1, 0, 0, 0, 0),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: *NewPoint(6, 3, 4),
+		},
+		{
+			name: "a shearing transformation moves y in proportion to x",
+			m:    Shearing(0, 0, 1, 0, 0, 0),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: *NewPoint(2, 5, 4),
+		},
+		{
+			name: "a shearing transformation moves y in proportion to z",
+			m:    Shearing(0, 0, 0, 1, 0, 0),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: *NewPoint(2, 7, 4),
+		},
+		{
+			name: "a shearing transformation moves z in proportion to x",
+			m:    Shearing(0, 0, 0, 0, 1, 0),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: *NewPoint(2, 3, 6),
+		},
+		{
+			name: "a shearing transformation moves z in proportion to y",
+			m:    Shearing(0, 0, 0, 0, 0, 1),
+			args: args{
+				*NewPoint(2, 3, 4),
+			},
+			want: *NewPoint(2, 3, 7),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.m.MultiplyByTuple(tt.args.t); !reflect.DeepEqual(got, tt.want) {
+			if got := tt.m.MultiplyByTuple(tt.args.t); !got.Equals(&tt.want) {
 				t.Errorf("MultiplyByTuple() = %v, want %v", got, tt.want)
 			}
 		})
