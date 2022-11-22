@@ -1,5 +1,7 @@
 package jtracer
 
+import "math"
+
 // Tuple describes a point in 3 dimensional space
 type Tuple struct {
 	X, Y, Z float64
@@ -78,4 +80,32 @@ func (t *Tuple) Divide(a float64) *Tuple {
 		t.Z / a,
 		t.W / a,
 	}
+}
+
+// Magnitude calculates the magnitude of the vector described by t
+func (t *Tuple) Magnitude() float64 {
+	return math.Sqrt(t.X*t.X + t.Y*t.Y + t.Z*t.Z + t.W*t.W)
+}
+
+// Normalize normalizes a vector
+func (t *Tuple) Normalize() *Tuple {
+	mag := t.Magnitude()
+	return &Tuple{
+		t.X / mag,
+		t.Y / mag,
+		t.Z / mag,
+		t.W / mag,
+	}
+}
+
+// Dot calculates the dot product with another tuple
+func (t *Tuple) Dot(a *Tuple) float64 {
+	return a.X*t.X + a.Y*t.Y + a.Z*t.Z + a.W*t.W
+}
+
+func (t *Tuple) Cross(b *Tuple) *Tuple {
+	return NewVector(
+		t.Y*b.Z-t.Z*b.Y,
+		t.Z*b.X-t.X*b.Z,
+		t.X*b.Y-t.Y*b.X)
 }
