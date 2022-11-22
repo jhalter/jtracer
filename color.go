@@ -1,5 +1,7 @@
 package jtracer
 
+import "math"
+
 // Color defines a color
 type Color struct {
 	Red, Green, Blue float64
@@ -48,4 +50,21 @@ func (c *Color) Equals(a *Color) bool {
 	return floatEquals(c.Red, a.Red) &&
 		floatEquals(c.Green, a.Green) &&
 		floatEquals(c.Blue, a.Blue)
+}
+
+func clamp(scaledValue int) int {
+	if scaledValue < 0 {
+		return 0
+	}
+	if scaledValue > 255 {
+		return 255
+	}
+	return scaledValue
+}
+
+// Normalize scales a color to a range of 0 to 255
+func (c *Color) Normalize() (int, int, int) {
+	return clamp(int(math.Round(c.Red * 255))),
+		clamp(int(math.Round(c.Green * 255))),
+		clamp(int(math.Round(c.Blue * 255)))
 }
