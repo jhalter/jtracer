@@ -123,3 +123,14 @@ func (m Matrix) Inverse() Matrix {
 
 	return m2
 }
+
+func (m Matrix) Transpose() Matrix {
+	out := make(Matrix, len(m))
+	for i := 0; i < len(m); i++ {
+		out[i] = make([]float64, len(m[0]))
+		for j := 0; j < len(m[0]); j++ {
+			out[i][j] = m[j][i]
+		}
+	}
+	return out
+}

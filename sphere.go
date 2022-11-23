@@ -41,3 +41,12 @@ func (s Sphere) Intersects(r Ray) Intersections {
 	xs = append(xs, Intersection{T: t2, Object: s})
 	return xs
 }
+
+func (s Sphere) NormalAt(worldPoint Tuple) Tuple {
+	objectPoint := s.Transform.Inverse().MultiplyByTuple(worldPoint)
+	objectNormal := objectPoint.Subtract(NewPoint(0, 0, 0))
+	worldNormal := s.Transform.Inverse().Transpose().MultiplyByTuple(*objectNormal)
+	worldNormal.W = 0
+
+	return *worldNormal.Normalize()
+}

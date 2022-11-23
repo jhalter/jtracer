@@ -1,6 +1,8 @@
 package jtracer
 
-import "math"
+import (
+	"math"
+)
 
 // Tuple describes a point in 3 dimensional space
 type Tuple struct {

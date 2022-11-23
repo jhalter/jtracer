@@ -562,3 +562,39 @@ func TestMatrix_Inverse(t *testing.T) {
 		})
 	}
 }
+
+func TestMatrix_Transpose(t *testing.T) {
+	tests := []struct {
+		name string
+		m    Matrix
+		want Matrix
+	}{
+		{
+			name: "transposing a matrix",
+			m: Matrix{
+				{0, 9, 3, 0},
+				{9, 8, 0, 8},
+				{1, 8, 5, 3},
+				{0, 0, 5, 8},
+			},
+			want: Matrix{
+				{0, 9, 1, 0},
+				{9, 8, 8, 0},
+				{3, 0, 5, 5},
+				{0, 8, 3, 8},
+			},
+		},
+		{
+			name: "transposing a matrix",
+			m:    IdentityMatrix,
+			want: IdentityMatrix,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.m.Transpose(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Transpose() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
