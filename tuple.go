@@ -111,3 +111,7 @@ func (t *Tuple) Cross(b *Tuple) *Tuple {
 		t.Z*b.X-t.X*b.Z,
 		t.X*b.Y-t.Y*b.X)
 }
+
+func (t *Tuple) Reflect(normal Tuple) Tuple {
+	return *t.Subtract(normal.Multiply(2.0).Multiply(t.Dot(&normal)))
+}

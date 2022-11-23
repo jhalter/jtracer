@@ -8,12 +8,14 @@ import (
 type Sphere struct {
 	id        int
 	Transform Matrix
+	Material  Material
 }
 
 func NewSphere() Sphere {
 	return Sphere{
 		id:        rand.Int(),
 		Transform: IdentityMatrix,
+		Material:  NewMaterial(),
 	}
 }
 

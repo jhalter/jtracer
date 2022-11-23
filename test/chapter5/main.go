@@ -9,7 +9,7 @@ func main() {
 	// put the wall at z = 10
 	wallZ := 10.0
 	wallSize := 7.0
-	canvasPixels := 100.0
+	canvasPixels := 600.0
 
 	pixelSize := wallSize / canvasPixels
 	half := wallSize / 2

@@ -521,3 +521,57 @@ func TestTuple_Cross(t1 *testing.T) {
 		})
 	}
 }
+
+func TestTuple_Reflect(t1 *testing.T) {
+	type fields struct {
+		X float64
+		Y float64
+		Z float64
+		W float64
+	}
+	type args struct {
+		normal Tuple
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   Tuple
+	}{
+		{
+			name: "reflecting a vector approaching at 45 degrees",
+			fields: fields{
+				X: 1,
+				Y: -1,
+				Z: 0,
+				W: 0,
+			},
+			args: args{*NewVector(0, 1, 0)},
+			want: *NewVector(1, 1, 0),
+		},
+		{
+			name: "reflecting a vector off a slanted surface",
+			fields: fields{
+				X: 0,
+				Y: -1,
+				Z: 0,
+				W: 0,
+			},
+			args: args{*NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0)},
+			want: *NewVector(1, 0, 0),
+		},
+	}
+	for _, tt := range tests {
+		t1.Run(tt.name, func(t1 *testing.T) {
+			t := &Tuple{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+				Z: tt.fields.Z,
+				W: tt.fields.W,
+			}
+			if got := t.Reflect(tt.args.normal); !got.Equals(&tt.want) {
+				t1.Errorf("Reflect() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
