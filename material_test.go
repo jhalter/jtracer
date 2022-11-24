@@ -131,6 +131,30 @@ func TestMaterial_Lighting(t *testing.T) {
 			},
 			want: Color{1.6364, 1.6364, 1.6364},
 		},
+		{
+			name: "lighting with the eye between the light and the surface",
+			fields: fields{
+				Color{1, 1, 1},
+				0.1,
+				0.9,
+				0.9,
+				200.0,
+				false,
+				0.0,
+			},
+			args: args{
+				object: Sphere{},
+				light: Light{
+					Position:  *NewPoint(0, 0, -10),
+					Intensity: Color{1, 1, 1},
+				},
+				point:    *NewPoint(0, 0, 0),
+				eyev:     *NewVector(0, 0, -1),
+				normalv:  *NewVector(0, 0, -1),
+				inShadow: true,
+			},
+			want: Color{0.1, 0.1, 0.1},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

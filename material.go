@@ -14,13 +14,11 @@ type Material struct {
 
 func NewMaterial() Material {
 	return Material{
-		Color{1, 1, 1},
-		0.1,
-		0.9,
-		0.9,
-		200.0,
-		false,
-		0.0,
+		Color:     Color{1, 1, 1},
+		Ambient:   0.1,
+		Diffuse:   0.9,
+		Specular:  0.9,
+		Shininess: 200.0,
 	}
 }
 

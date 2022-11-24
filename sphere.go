@@ -6,14 +6,14 @@ import (
 )
 
 type Sphere struct {
-	id        int
+	ID        int
 	Transform Matrix
 	Material  Material
 }
 
 func NewSphere() Sphere {
 	return Sphere{
-		id:        rand.Int(),
+		ID:        rand.Int(),
 		Transform: IdentityMatrix,
 		Material:  NewMaterial(),
 	}

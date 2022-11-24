@@ -62,7 +62,7 @@ func (i Intersection) PrepareComputations(r Ray) Computations {
 		comps.Normalv = *comps.Normalv.Negate()
 	}
 
-	// comps.OverPoint = *comps.Point.Add(comps.Normalv.Multiply(epsilon))
+	comps.OverPoint = *comps.Point.Add(comps.Normalv.Multiply(epsilon))
 	// comps.Reflectv = r.Direction.Reflect(comps.Normalv)
 
 	return comps
