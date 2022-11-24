@@ -56,22 +56,24 @@ func Shearing(xy, xz, yx, yz, zx, zy float64) Matrix {
 	}
 }
 
-// func ViewTransform(from, to, up *Tuple) Matrix {
-// 	forward := to.Subtract(from).Normalize()
-// 	upn := up.Normalize()
-// 	left := forward.Cross(upn)
-// 	trueUp := left.Cross(forward)
-//
-// 	orientation := Matrix{
-// 		{left.X, left.Y, left.Z, 0},
-// 		{trueUp.X, trueUp.Y, trueUp.Z, 0},
-// 		{-forward.X, -forward.Y, -forward.Z, 0},
-// 		{0, 0, 0, 1},
-// 	}
-//
-// 	return orientation.Multiply(Translation(
-// 		-from.X,
-// 		-from.Y,
-// 		-from.Z,
-// 	))
-// }
+func ViewTransform(from, to, up *Tuple) Matrix {
+	forward := to.Subtract(from).Normalize()
+	upn := up.Normalize()
+	left := forward.Cross(upn)
+	trueUp := left.Cross(forward)
+
+	orientation := Matrix{
+		{left.X, left.Y, left.Z, 0},
+		{trueUp.X, trueUp.Y, trueUp.Z, 0},
+		{-forward.X, -forward.Y, -forward.Z, 0},
+		{0, 0, 0, 1},
+	}
+
+	return orientation.Multiply(
+		NewTranslation(
+			-from.X,
+			-from.Y,
+			-from.Z,
+		),
+	)
+}

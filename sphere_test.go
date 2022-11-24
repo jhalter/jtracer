@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"github.com/google/go-cmp/cmp"
 	"math"
 	"reflect"
 	"testing"
@@ -217,7 +218,7 @@ func TestSphere_NormalAt(t *testing.T) {
 				id:        tt.fields.id,
 				Transform: tt.fields.Transform,
 			}
-			if got := s.NormalAt(tt.args.worldPoint); !got.Equals(&tt.want) {
+			if got := s.NormalAt(tt.args.worldPoint); !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("NormalAt() = %v, want %v", got, tt.want)
 			}
 		})

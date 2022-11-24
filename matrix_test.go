@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"github.com/google/go-cmp/cmp"
 	"math"
 	"reflect"
 	"testing"
@@ -322,7 +323,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.m.MultiplyByTuple(tt.args.t); !got.Equals(&tt.want) {
+			if got := tt.m.MultiplyByTuple(tt.args.t); !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("MultiplyByTuple() = %v, want %v", got, tt.want)
 			}
 		})

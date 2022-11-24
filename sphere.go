@@ -19,6 +19,10 @@ func NewSphere() Sphere {
 	}
 }
 
+func (s Sphere) GetMaterial() Material {
+	return s.Material
+}
+
 func (s Sphere) Intersects(r Ray) Intersections {
 	ray := r.Transform(s.Transform.Inverse())
 

@@ -25,10 +25,9 @@ func NewMaterial() Material {
 }
 
 func (m Material) Lighting(light Light, point, eyev, normalv Tuple, inShadow bool) Color {
-	var color Color
-	color = m.Color
+	color := m.Color
 
-	// /combine the surface color with the light's color/intensity
+	// combine the surface color with the light's color/intensity
 	effectiveColor := color.Multiply(&light.Intensity)
 
 	// find the direction to the light source
