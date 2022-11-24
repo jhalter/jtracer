@@ -34,8 +34,8 @@ func TestSphere_Intersects(t *testing.T) {
 				},
 			},
 			want: Intersections{
-				{T: 4.0, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
-				{T: 6.0, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
+				{T: 4.0, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
+				{T: 6.0, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
 			},
 		},
 		{
@@ -51,8 +51,8 @@ func TestSphere_Intersects(t *testing.T) {
 				},
 			},
 			want: Intersections{
-				{T: 5, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
-				{T: 5, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
+				{T: 5, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
+				{T: 5, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
 			},
 		},
 		{
@@ -82,8 +82,8 @@ func TestSphere_Intersects(t *testing.T) {
 				},
 			},
 			want: Intersections{
-				{T: -1, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
-				{T: 1, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
+				{T: -1, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
+				{T: 1, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
 			},
 		},
 		{
@@ -99,8 +99,8 @@ func TestSphere_Intersects(t *testing.T) {
 				},
 			},
 			want: Intersections{
-				{T: -6, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
-				{T: -4, Object: Sphere{ID: 1, Transform: IdentityMatrix}},
+				{T: -6, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
+				{T: -4, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
 			},
 		},
 		{
@@ -116,8 +116,8 @@ func TestSphere_Intersects(t *testing.T) {
 				},
 			},
 			want: Intersections{
-				{T: 3, Object: Sphere{ID: 1, Transform: Scaling(2, 2, 2)}},
-				{T: 7, Object: Sphere{ID: 1, Transform: Scaling(2, 2, 2)}},
+				{T: 3, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
+				{T: 7, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
 			},
 		},
 		{
@@ -138,8 +138,8 @@ func TestSphere_Intersects(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := Sphere{
-				ID:        tt.fields.id,
-				Transform: tt.fields.Transform,
+				ID:    tt.fields.id,
+				Shape: Shape{Transform: tt.fields.Transform},
 			}
 			if got := s.Intersects(tt.args.r); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Intersects() = %v, want %v", got, tt.want)
@@ -215,8 +215,8 @@ func TestSphere_NormalAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := Sphere{
-				ID:        tt.fields.id,
-				Transform: tt.fields.Transform,
+				ID:    tt.fields.id,
+				Shape: Shape{Transform: tt.fields.Transform},
 			}
 			if got := s.NormalAt(tt.args.worldPoint); !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("NormalAt() = %v, want %v", got, tt.want)

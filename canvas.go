@@ -13,7 +13,7 @@ type Canvas struct {
 	Data   [][]Color
 }
 
-func NewCanvas(width int, height int) *Canvas {
+func NewCanvas(width, height int) *Canvas {
 	data := make([][]Color, height)
 	for i := range data {
 		data[i] = make([]Color, width)
@@ -25,7 +25,7 @@ func (c *Canvas) WritePixel(x, y int, color *Color) {
 	c.Data[y][x] = *color
 }
 
-func (c *Canvas) PixelAt(x int, y int) *Color {
+func (c *Canvas) PixelAt(x, y int) *Color {
 	return &c.Data[y][x]
 }
 

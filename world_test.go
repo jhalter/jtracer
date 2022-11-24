@@ -10,7 +10,7 @@ var dw = DefaultWorld()
 func TestWorld_Intersect(t *testing.T) {
 
 	type fields struct {
-		Objects []Shape
+		Objects []Shaper
 		Light   Light
 	}
 	type args struct {
@@ -23,11 +23,8 @@ func TestWorld_Intersect(t *testing.T) {
 		want   Intersections
 	}{
 		{
-			name: "intersect a world with a ray",
-			fields: fields{
-				Objects: dw.Objects,
-				Light:   dw.Light,
-			},
+			name:   "intersect a world with a ray",
+			fields: fields(dw),
 			args: args{
 				r: Ray{
 					Origin:    *NewPoint(0, 0, -5),
@@ -69,7 +66,7 @@ func TestWorld_Intersect(t *testing.T) {
 
 func TestWorld_ShadeHit(t *testing.T) {
 	type fields struct {
-		Objects []Shape
+		Objects []Shaper
 		Light   Light
 	}
 	type args struct {
@@ -110,11 +107,13 @@ func TestWorld_ShadeHit(t *testing.T) {
 		{
 			name: "ShadeHit() is given an intersection in shadow",
 			fields: fields{
-				Objects: []Shape{
+				Objects: []Shaper{
 					NewSphere(),
 					Sphere{
-						Transform: NewTranslation(0, 0, 10),
-						Material:  NewMaterial(),
+						Shape: Shape{
+							Transform: NewTranslation(0, 0, 10),
+							Material:  NewMaterial(),
+						},
 					},
 				},
 				Light: NewPointLight(*NewPoint(0, 0, -10), White),
@@ -124,8 +123,10 @@ func TestWorld_ShadeHit(t *testing.T) {
 					i := Intersection{
 						T: 4,
 						Object: Sphere{
-							Transform: NewTranslation(0, 0, 10),
-							Material:  NewMaterial(),
+							Shape: Shape{
+								Transform: NewTranslation(0, 0, 10),
+								Material:  NewMaterial(),
+							},
 						},
 					}
 					return i.PrepareComputations(
@@ -158,7 +159,7 @@ func TestWorld_ShadeHit(t *testing.T) {
 
 func TestWorld_IsShadowed(t *testing.T) {
 	type fields struct {
-		Objects []Shape
+		Objects []Shaper
 		Light   Light
 	}
 	type args struct {

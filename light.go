@@ -6,5 +6,5 @@ type Light struct {
 }
 
 func NewPointLight(p Tuple, i Color) Light {
-	return Light{p, i}
+	return Light{Position: p, Intensity: i}
 }

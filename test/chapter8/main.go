@@ -52,7 +52,7 @@ func main() {
 	left.Material.Specular = 0.3
 
 	world := jtracer.NewWorld()
-	world.Objects = []jtracer.Shape{floor, leftWall, rightWall, middle, right, left}
+	world.Objects = []jtracer.Shaper{floor, leftWall, rightWall, middle, right, left}
 	world.Light = jtracer.NewPointLight(*jtracer.NewPoint(-10, 10, -10), jtracer.Color{Red: 1, Green: 1, Blue: 1})
 
 	camera := jtracer.NewCamera(600, 300, math.Pi/3)

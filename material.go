@@ -14,7 +14,7 @@ type Material struct {
 
 func NewMaterial() Material {
 	return Material{
-		Color:     Color{1, 1, 1},
+		Color:     Color{Red: 1, Green: 1, Blue: 1},
 		Ambient:   0.1,
 		Diffuse:   0.9,
 		Specular:  0.9,

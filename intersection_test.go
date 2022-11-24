@@ -87,7 +87,7 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 	s := NewSphere()
 	type fields struct {
 		T      float64
-		Object Shape
+		Object Shaper
 	}
 	type args struct {
 		r Ray

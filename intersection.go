@@ -4,7 +4,7 @@ import "math"
 
 type Intersection struct {
 	T      float64
-	Object Shape
+	Object Shaper
 }
 
 type Intersections []Intersection
@@ -38,7 +38,7 @@ func (i Intersections) Hit() *Intersection {
 
 type Computations struct {
 	T         float64
-	Object    Shape
+	Object    Shaper
 	Point     Tuple
 	Eyev      Tuple
 	Normalv   Tuple
@@ -53,6 +53,7 @@ func (i Intersection) PrepareComputations(r Ray) Computations {
 		Object: i.Object,
 		Inside: false,
 	}
+
 	comps.Point = *r.Position(comps.T)
 	comps.Eyev = *r.Direction.Negate()
 	comps.Normalv = comps.Object.NormalAt(comps.Point)

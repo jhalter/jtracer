@@ -3,7 +3,7 @@ package jtracer
 import "sort"
 
 type World struct {
-	Objects []Shape
+	Objects []Shaper
 	Light   Light
 }
 
@@ -25,7 +25,7 @@ func DefaultWorld() World {
 	s2.Transform = Scaling(0.5, 0.5, 0.5)
 
 	w := NewWorld()
-	w.Objects = []Shape{s1, s2}
+	w.Objects = []Shaper{s1, s2}
 
 	w.Light = NewPointLight(
 		*NewPoint(-10, 10, -10),

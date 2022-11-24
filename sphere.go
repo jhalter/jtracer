@@ -6,16 +6,17 @@ import (
 )
 
 type Sphere struct {
-	ID        int
-	Transform Matrix
-	Material  Material
+	ID int
+	Shape
 }
 
 func NewSphere() Sphere {
 	return Sphere{
-		ID:        rand.Int(),
-		Transform: IdentityMatrix,
-		Material:  NewMaterial(),
+		ID: rand.Int(),
+		Shape: Shape{
+			Transform: IdentityMatrix,
+			Material:  NewMaterial(),
+		},
 	}
 }
 

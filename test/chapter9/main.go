@@ -6,29 +6,11 @@ import (
 )
 
 func main() {
-	floor := jtracer.NewSphere()
+	floor := jtracer.NewPlane()
 	floor.Transform = jtracer.Scaling(10, 0.01, 10)
 	floor.Material = jtracer.NewMaterial()
-	floor.Material.Color = jtracer.Color{Red: 1, Green: 0.9, Blue: 0.9}
+	floor.Material.Color = jtracer.Color{Red: 0.5, Green: 0.5, Blue: 0.5}
 	floor.Material.Specular = 0
-
-	leftWall := jtracer.NewSphere()
-	tf1 := jtracer.NewTranslation(0, 0, 5)
-	tf2 := jtracer.RotationY(-math.Pi / 4)
-	tf3 := jtracer.RotationX(math.Pi / 2)
-	tf4 := jtracer.Scaling(10, 0.01, 10)
-	leftWall.Transform = tf1.Multiply(tf2).Multiply(tf3).Multiply(tf4)
-	// leftWall.Transform = tf4.Multiply(tf3).Multiply(tf2).Multiply(tf1)
-
-	leftWall.Material = floor.Material
-
-	rightWall := jtracer.NewSphere()
-	tf1 = jtracer.NewTranslation(0, 0, 5)
-	tf2 = jtracer.RotationY(math.Pi / 4)
-	tf3 = jtracer.RotationX(math.Pi / 2)
-	tf4 = jtracer.Scaling(10, 0.01, 10)
-	rightWall.Transform = tf1.Multiply(tf2).Multiply(tf3).Multiply(tf4)
-	rightWall.Material = floor.Material
 
 	middle := jtracer.NewSphere()
 	middle.Transform = jtracer.NewTranslation(-0.5, 1, 0.5)
@@ -52,10 +34,10 @@ func main() {
 	left.Material.Specular = 0.3
 
 	world := jtracer.NewWorld()
-	world.Objects = []jtracer.Shaper{floor, leftWall, rightWall, middle, right, left}
+	world.Objects = []jtracer.Shaper{floor, middle, right, left}
 	world.Light = jtracer.NewPointLight(*jtracer.NewPoint(-10, 10, -10), jtracer.Color{Red: 1, Green: 1, Blue: 1})
 
-	camera := jtracer.NewCamera(600, 300, math.Pi/3)
+	camera := jtracer.NewCamera(400, 200, math.Pi/3)
 	camera.Transform = jtracer.ViewTransform(
 		jtracer.NewPoint(0, 1.5, -5),
 		jtracer.NewPoint(0, 1, 0),
@@ -63,5 +45,8 @@ func main() {
 	)
 
 	canvas := camera.Render(world)
-	canvas.SavePNG("chapter7.png")
+	err := canvas.SavePNG("chapter9.png")
+	if err != nil {
+		panic(err)
+	}
 }
