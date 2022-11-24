@@ -45,7 +45,7 @@ func main() {
 				normal := shape.NormalAt(*point)
 				eye := r.Direction.Negate()
 
-				color = shape.Material.Lighting(light, *point, *eye, normal, false)
+				color = shape.Material.Lighting(nil, light, *point, *eye, normal, false)
 
 				canvas.WritePixel(int(x), int(y), &color)
 			}

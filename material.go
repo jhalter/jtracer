@@ -1,6 +1,8 @@
 package jtracer
 
-import "math"
+import (
+	"math"
+)
 
 type Material struct {
 	Color        Color
@@ -8,6 +10,7 @@ type Material struct {
 	Diffuse      float64
 	Specular     float64
 	Shininess    float64
+	Pattern      Patterny
 	HasPattern   bool
 	Reflectivity float64
 }
@@ -22,8 +25,14 @@ func NewMaterial() Material {
 	}
 }
 
-func (m Material) Lighting(light Light, point, eyev, normalv Tuple, inShadow bool) Color {
-	color := m.Color
+func (m Material) Lighting(object Shaper, light Light, point, eyev, normalv Tuple, inShadow bool) Color {
+
+	var color Color
+	if m.HasPattern {
+		color = m.Pattern.ColorAtObject(object, point)
+	} else {
+		color = m.Color
+	}
 
 	// combine the surface color with the light's color/intensity
 	effectiveColor := color.Multiply(&light.Intensity)

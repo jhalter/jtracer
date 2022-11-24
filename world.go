@@ -61,7 +61,7 @@ func (w World) ColorAt(r Ray) Color {
 func (w World) ShadeHit(comps Computations) Color {
 	shadowed := w.IsShadowed(comps.OverPoint)
 
-	return comps.Object.GetMaterial().Lighting(w.Light, comps.OverPoint, comps.Eyev, comps.Normalv, shadowed)
+	return comps.Object.GetMaterial().Lighting(comps.Object, w.Light, comps.OverPoint, comps.Eyev, comps.Normalv, shadowed)
 }
 
 func (w World) IsShadowed(p Tuple) bool {

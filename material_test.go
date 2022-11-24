@@ -1,16 +1,11 @@
 package jtracer
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"math"
 	"testing"
 )
 
 func TestMaterial_Lighting(t *testing.T) {
-	m := NewMaterial()
-	p := NewPoint(0, 0, 0)
-
-	spew.Dump(m, p)
 
 	type fields struct {
 		Color        Color
@@ -18,6 +13,7 @@ func TestMaterial_Lighting(t *testing.T) {
 		Diffuse      float64
 		Specular     float64
 		Shininess    float64
+		Pattern      Patterny
 		HasPattern   bool
 		Reflectivity float64
 	}
@@ -43,6 +39,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				0.9,
 				0.9,
 				200.0,
+				nil,
 				false,
 				0.0,
 			},
@@ -67,6 +64,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				0.9,
 				0.9,
 				200.0,
+				nil,
 				false,
 				0.0,
 			},
@@ -91,6 +89,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				0.9,
 				0.9,
 				200.0,
+				nil,
 				false,
 				0.0,
 			},
@@ -115,6 +114,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				0.9,
 				0.9,
 				200.0,
+				nil,
 				false,
 				0.0,
 			},
@@ -139,6 +139,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				0.9,
 				0.9,
 				200.0,
+				nil,
 				false,
 				0.0,
 			},
@@ -155,6 +156,77 @@ func TestMaterial_Lighting(t *testing.T) {
 			},
 			want: Color{0.1, 0.1, 0.1},
 		},
+		{
+			name: "lighting with a pattern applied",
+			fields: fields{
+				Color:     Color{1, 1, 1},
+				Ambient:   1,
+				Diffuse:   0,
+				Specular:  0,
+				Pattern:   StripePattern{A: White, B: Black, Transform: IdentityMatrix},
+				Shininess: 200.0,
+			},
+			args: args{
+				object: Sphere{},
+				light: Light{
+					Position:  *NewPoint(0, 0, -10),
+					Intensity: White,
+				},
+				point:    *NewPoint(0.9, 0, 0),
+				eyev:     *NewVector(0, 0, -1),
+				normalv:  *NewVector(0, 0, -1),
+				inShadow: false,
+			},
+			want: White,
+		},
+		{
+			name: "lighting with a pattern applied",
+			fields: fields{
+				Color:      Color{1, 1, 1},
+				Ambient:    1,
+				Diffuse:    0,
+				Specular:   0,
+				HasPattern: true,
+				Pattern:    StripePattern{A: White, B: Black, Transform: IdentityMatrix},
+				Shininess:  200.0,
+			},
+			args: args{
+				object: NewSphere(),
+				light: Light{
+					Position:  *NewPoint(0, 0, -10),
+					Intensity: White,
+				},
+				point:    *NewPoint(0.9, 0, 0),
+				eyev:     *NewVector(0, 0, -1),
+				normalv:  *NewVector(0, 0, -1),
+				inShadow: false,
+			},
+			want: White,
+		},
+		{
+			name: "lighting with a pattern applied",
+			fields: fields{
+				Color:      Color{1, 1, 1},
+				Ambient:    1,
+				Diffuse:    0,
+				Specular:   0,
+				HasPattern: true,
+				Pattern:    StripePattern{A: White, B: Black, Transform: IdentityMatrix},
+				Shininess:  200.0,
+			},
+			args: args{
+				object: NewSphere(),
+				light: Light{
+					Position:  *NewPoint(0, 0, -10),
+					Intensity: White,
+				},
+				point:    *NewPoint(1.1, 0, 0),
+				eyev:     *NewVector(0, 0, -1),
+				normalv:  *NewVector(0, 0, -1),
+				inShadow: false,
+			},
+			want: Black,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -165,9 +237,10 @@ func TestMaterial_Lighting(t *testing.T) {
 				Specular:     tt.fields.Specular,
 				Shininess:    tt.fields.Shininess,
 				HasPattern:   tt.fields.HasPattern,
+				Pattern:      tt.fields.Pattern,
 				Reflectivity: tt.fields.Reflectivity,
 			}
-			if got := m.Lighting(tt.args.light, tt.args.point, tt.args.eyev, tt.args.normalv, tt.args.inShadow); !got.Equals(&tt.want) {
+			if got := m.Lighting(tt.args.object, tt.args.light, tt.args.point, tt.args.eyev, tt.args.normalv, tt.args.inShadow); !got.Equals(&tt.want) {
 				t.Errorf("Lighting() = %v, want %v", got, tt.want)
 			}
 		})
