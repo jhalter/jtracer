@@ -1,6 +1,10 @@
 package jtracer
 
-import "math"
+import (
+	"fmt"
+	"math"
+	"sync"
+)
 
 type Camera struct {
 	Hsize      float64
@@ -56,16 +60,43 @@ func (c Camera) RayForPixel(px, py float64) Ray {
 	return Ray{origin, *direction}
 }
 
+const RendererCount = 8
+
 func (c Camera) Render(w World) Canvas {
 	image := NewCanvas(int(c.Hsize), int(c.Vsize))
 
-	for y := 0.0; y < c.Vsize; y++ {
-		for x := 0.0; x < c.Hsize; x++ {
-			r := c.RayForPixel(x, y)
-			color := w.ColorAt(r)
-			image.WritePixel(int(x), int(y), &color)
+	var wg sync.WaitGroup
+	wg.Add(RendererCount)
+
+	waitCh := make(chan struct{})
+
+	go func() {
+		for i := 0; i < RendererCount; i++ {
+			chunkSize := c.Vsize / RendererCount
+			yStart := math.Floor(float64(i) * chunkSize)
+			yEnd := math.Ceil(yStart + chunkSize - 1)
+
+			go func() {
+				defer wg.Done()
+				fmt.Printf("%v to %v\n", yStart, yEnd)
+				for y := yStart; y <= yEnd; y++ {
+					for x := 0.0; x < c.Hsize; x++ {
+						r := c.RayForPixel(x, y)
+						color := w.ColorAt(r)
+						image.WritePixel(int(x), int(y), &color)
+						//messages <- Pixel{int(x), int(y), color}
+					}
+				}
+				//fmt.Printf("RENDERER DONE\n")
+			}()
 		}
-	}
+
+		wg.Wait()
+		close(waitCh)
+	}()
+
+	// Block until the wait group is done
+	<-waitCh
 
 	return *image
 }
