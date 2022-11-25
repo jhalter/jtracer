@@ -1,7 +1,6 @@
 package jtracer
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 	"math"
 	"testing"
@@ -80,8 +79,6 @@ func TestNewCamera(t *testing.T) {
 }
 
 func TestCamera_RayForPixel(t *testing.T) {
-	c := NewCamera(201, 101, math.Pi/2)
-	spew.Dump(c)
 	type fields struct {
 		Hsize      float64
 		Vsize      float64
@@ -181,9 +178,6 @@ func TestCamera_RayForPixel(t *testing.T) {
 }
 
 func TestCamera_Render(t *testing.T) {
-	c := NewCamera(11, 11, math.Pi/2)
-	spew.Dump(c)
-
 	type fields struct {
 		Hsize      float64
 		Vsize      float64
