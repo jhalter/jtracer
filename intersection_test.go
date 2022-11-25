@@ -1,7 +1,9 @@
 package jtracer
 
 import (
+	"fmt"
 	"github.com/google/go-cmp/cmp"
+	"math"
 	"reflect"
 	"testing"
 )
@@ -118,7 +120,7 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				Normalv:   *NewVector(0, 0, -1),
 				Inside:    false,
 				OverPoint: *NewPoint(0, 0, -1.00001),
-				Reflectv:  Tuple{},
+				Reflectv:  *NewVector(0, 0, -1),
 			},
 		},
 		{
@@ -141,7 +143,30 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				Normalv:   *NewVector(0, 0, -1),
 				Inside:    true,
 				OverPoint: *NewPoint(0, 0, 1),
-				Reflectv:  Tuple{},
+				Reflectv:  *NewVector(0, 0, -1),
+			},
+		},
+		{
+			name: "precomputing the reflection vector",
+			fields: fields{
+				T:      math.Sqrt(2),
+				Object: Plane{},
+			},
+			args: args{
+				r: Ray{
+					Origin:    *NewPoint(0, 1, -1),
+					Direction: *NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+				},
+			},
+			want: Computations{
+				T:         1.4142135623730951,
+				Object:    Plane{},
+				Point:     *NewPoint(0, 0, 0),
+				Eyev:      *NewVector(0, 0.7071067811865476, -0.7071067811865476),
+				Normalv:   *NewVector(0, 1, 0),
+				Inside:    false,
+				OverPoint: *NewPoint(0, 0, 0),
+				Reflectv:  *NewVector(0, math.Sqrt(2)/2, math.Sqrt(2)/2),
 			},
 		},
 	}
@@ -151,7 +176,51 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				T:      tt.fields.T,
 				Object: tt.fields.Object,
 			}
+
 			if got := i.PrepareComputations(tt.args.r); !cmp.Equal(got, tt.want, float64Comparer) {
+				fmt.Println(cmp.Diff(got, tt.want))
+				t.Errorf("PrepareComputations() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIntersection_PrecomputingReflectionVector(t *testing.T) {
+	type fields struct {
+		T      float64
+		Object Shaper
+	}
+	type args struct {
+		r Ray
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   Tuple
+	}{
+		{
+			name: "precomputing the reflection vector",
+			fields: fields{
+				T:      math.Sqrt(2),
+				Object: Plane{},
+			},
+			args: args{
+				r: Ray{
+					Origin:    *NewPoint(0, 1, -1),
+					Direction: *NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+				},
+			},
+			want: *NewVector(0, math.Sqrt(2)/2, math.Sqrt(2)/2),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			i := Intersection{
+				T:      tt.fields.T,
+				Object: tt.fields.Object,
+			}
+			if got := i.PrepareComputations(tt.args.r); !reflect.DeepEqual(got.Reflectv, tt.want) {
 				t.Errorf("PrepareComputations() = %v, want %v", got, tt.want)
 			}
 		})
