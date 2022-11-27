@@ -5,23 +5,26 @@ import (
 )
 
 type Material struct {
-	Color        Color
-	Ambient      float64
-	Diffuse      float64
-	Specular     float64
-	Shininess    float64
-	Pattern      Patterny
-	HasPattern   bool
-	Reflectivity float64
+	Color           Color
+	Ambient         float64
+	Diffuse         float64
+	Specular        float64
+	Shininess       float64
+	Pattern         Patterny
+	HasPattern      bool
+	Reflectivity    float64
+	Transparency    float64
+	RefractiveIndex float64
 }
 
 func NewMaterial() Material {
 	return Material{
-		Color:     Color{Red: 1, Green: 1, Blue: 1},
-		Ambient:   0.1,
-		Diffuse:   0.9,
-		Specular:  0.9,
-		Shininess: 200.0,
+		Color:           White,
+		Ambient:         0.1,
+		Diffuse:         0.9,
+		Specular:        0.9,
+		Shininess:       200.0,
+		RefractiveIndex: 1.0,
 	}
 }
 
@@ -72,6 +75,9 @@ func (m Material) Lighting(object Shaper, light Light, point, eyev, normalv Tupl
 			specular = *specular.MultiplyByScalar(factor)
 		}
 	}
+	//
+	//spew.Dump("diffuse", diffuse)
+	//spew.Dump("spec", specular)
 
 	c := ambient.Add(&diffuse)
 	c = c.Add(&specular)

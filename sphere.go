@@ -20,6 +20,19 @@ func NewSphere() Sphere {
 	}
 }
 
+func NewGlassSphere() Sphere {
+	return Sphere{
+		Shape: Shape{
+			ID:        rand.Int(),
+			Transform: IdentityMatrix,
+			Material: Material{
+				Transparency:    1.0,
+				RefractiveIndex: 1.5,
+			},
+		},
+	}
+}
+
 func (s Sphere) GetMaterial() Material {
 	return s.Material
 }

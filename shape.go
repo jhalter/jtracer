@@ -6,11 +6,17 @@ type Shaper interface {
 	NormalAt(worldPoint Tuple) Tuple
 	GetMaterial() Material
 	GetTransform() Matrix
+	GetID() int
 }
 
 type Shape struct {
+	ID        int
 	Material  Material
 	Transform Matrix
+}
+
+func (s Shape) GetID() int {
+	return s.ID
 }
 
 func (s Shape) GetMaterial() Material {

@@ -13,7 +13,7 @@ func main() {
 	floor.Material.Specular = 0
 	floor.Material.HasPattern = true
 	floor.Material.Pattern = jtracer.CheckersPattern{A: jtracer.White, B: jtracer.Black, Transform: jtracer.Scaling(0.1, 0.1, 0.1)}
-	floor.Material.Reflectivity = 0.9
+	floor.Material.Reflectivity = 0.4
 
 	middle := jtracer.NewSphere()
 	middle.Transform = jtracer.NewTranslation(-0.5, 1, 0.5)
@@ -21,8 +21,7 @@ func main() {
 	middle.Material.Color = jtracer.Color{Red: 0.1, Green: 1, Blue: 0.5}
 	middle.Material.Diffuse = 0.7
 	middle.Material.Specular = 0.3
-	middle.Material.HasPattern = true
-	middle.Material.Pattern = jtracer.StripePattern{A: jtracer.White, B: jtracer.Black, Transform: jtracer.Scaling(0.05, 0.05, 0.05).Multiply(jtracer.RotationY(45))}
+	middle.Material.Reflectivity = 0.7
 
 	right := jtracer.NewSphere()
 	right.Transform = jtracer.NewTranslation(1.5, 0.5, -0.5).Multiply(jtracer.Scaling(0.5, 0.5, 0.5))
@@ -30,7 +29,7 @@ func main() {
 	right.Material.Color = jtracer.Color{Red: 0.5, Green: 1, Blue: 0.1}
 	right.Material.Diffuse = 0.7
 	right.Material.Specular = 0.3
-	//right.Material.Reflectivity = 0.8
+	right.Material.Reflectivity = 0.2
 
 	left := jtracer.NewSphere()
 	left.Transform = jtracer.NewTranslation(-1.5, 0.33, -0.75).Multiply(jtracer.Scaling(0.33, 0.33, 0.33))
@@ -38,12 +37,13 @@ func main() {
 	left.Material.Color = jtracer.Color{Red: 1, Green: 0.8, Blue: 0.1}
 	left.Material.Diffuse = 0.7
 	left.Material.Specular = 0.3
+	right.Material.Reflectivity = 0.1
 
 	world := jtracer.NewWorld()
 	world.Objects = []jtracer.Shaper{floor, middle, right, left}
 	world.Light = jtracer.NewPointLight(*jtracer.NewPoint(-10, 10, -10), jtracer.Color{Red: 1, Green: 1, Blue: 1})
 
-	camera := jtracer.NewCamera(600, 300, math.Pi/3)
+	camera := jtracer.NewCamera(2400, 1200, math.Pi/3)
 	camera.Transform = jtracer.ViewTransform(
 		jtracer.NewPoint(0, 1.5, -5),
 		jtracer.NewPoint(0, 1, 0),

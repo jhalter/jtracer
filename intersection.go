@@ -1,6 +1,8 @@
 package jtracer
 
-import "math"
+import (
+	"math"
+)
 
 type Intersection struct {
 	T      float64
@@ -37,21 +39,79 @@ func (i Intersections) Hit() *Intersection {
 }
 
 type Computations struct {
-	T         float64
-	Object    Shaper
-	Point     Tuple
-	Eyev      Tuple
-	Normalv   Tuple
-	Inside    bool
-	OverPoint Tuple
-	Reflectv  Tuple
+	T          float64
+	Object     Shaper
+	Point      Tuple
+	Eyev       Tuple
+	Normalv    Tuple
+	Inside     bool
+	OverPoint  Tuple
+	UnderPoint Tuple
+	Reflectv   Tuple
+	N1         float64 // n1 is the refractive index belonging to the material being exited
+	N2         float64 // n2 is the refractive index belonging to the material being entered
 }
 
-func (i Intersection) PrepareComputations(r Ray) Computations {
+type container []Shaper
+
+func (c container) contains(shape Shaper) bool {
+	for _, i := range c {
+		if i.GetID() == shape.GetID() {
+			return true
+		}
+	}
+	return false
+}
+
+func (c container) remove(shape Shaper) container {
+	newContainer := container{}
+
+	for _, i := range c {
+		if i.GetID() != shape.GetID() {
+			newContainer = append(newContainer, i)
+		}
+	}
+
+	return newContainer
+}
+
+func (i Intersection) Equal(i2 Intersection) bool {
+	return i.T == i2.T && i.Object.GetID() == i2.Object.GetID()
+}
+
+func (i Intersection) PrepareComputations(r Ray, xs Intersections) Computations {
 	comps := Computations{
 		T:      i.T,
 		Object: i.Object,
 		Inside: false,
+	}
+
+	// containers will record which objects have been entered but not yet exited
+	// these objects must contain the subsequent intersection
+	var containers container
+	for _, intersection := range xs {
+
+		if i.Equal(intersection) {
+			if len(containers) == 0 {
+				comps.N1 = 1.0
+			} else {
+				comps.N1 = containers[len(containers)-1].GetMaterial().RefractiveIndex
+			}
+		}
+
+		if containers.contains(intersection.Object) {
+			containers = containers.remove(intersection.Object)
+		} else {
+			containers = append(containers, intersection.Object)
+		}
+
+		if i.Equal(intersection) {
+			if len(containers) == 0 {
+				comps.N2 = 1.0
+			} else {
+				comps.N2 = containers[len(containers)-1].GetMaterial().RefractiveIndex
+			}
+		}
 	}
 
 	comps.Point = *r.Position(comps.T)
@@ -64,6 +124,8 @@ func (i Intersection) PrepareComputations(r Ray) Computations {
 	}
 
 	comps.OverPoint = *comps.Point.Add(comps.Normalv.Multiply(epsilon))
+	comps.UnderPoint = *comps.Point.Subtract(comps.Normalv.Multiply(epsilon))
+
 	comps.Reflectv = r.Direction.Reflect(comps.Normalv)
 
 	return comps

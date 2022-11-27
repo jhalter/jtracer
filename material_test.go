@@ -34,14 +34,11 @@ func TestMaterial_Lighting(t *testing.T) {
 		{
 			name: "lighting with the eye between the light and the surface",
 			fields: fields{
-				Color{1, 1, 1},
-				0.1,
-				0.9,
-				0.9,
-				200.0,
-				nil,
-				false,
-				0.0,
+				Color:     Color{1, 1, 1},
+				Ambient:   0.1,
+				Diffuse:   0.9,
+				Specular:  0.9,
+				Shininess: 200.0,
 			},
 			args: args{
 				object: Sphere{},
@@ -59,14 +56,11 @@ func TestMaterial_Lighting(t *testing.T) {
 		{
 			name: "lighting with the eye between the light and the surface, eye offset 45 degrees",
 			fields: fields{
-				Color{1, 1, 1},
-				0.1,
-				0.9,
-				0.9,
-				200.0,
-				nil,
-				false,
-				0.0,
+				Color:     Color{1, 1, 1},
+				Ambient:   0.1,
+				Diffuse:   0.9,
+				Specular:  0.9,
+				Shininess: 200.0,
 			},
 			args: args{
 				object: Sphere{},
@@ -84,14 +78,11 @@ func TestMaterial_Lighting(t *testing.T) {
 		{
 			name: "lighting with the eye opposite surface, light offet 45 degrees",
 			fields: fields{
-				Color{1, 1, 1},
-				0.1,
-				0.9,
-				0.9,
-				200.0,
-				nil,
-				false,
-				0.0,
+				Color:     Color{1, 1, 1},
+				Ambient:   0.1,
+				Diffuse:   0.9,
+				Specular:  0.9,
+				Shininess: 200.0,
 			},
 			args: args{
 				object: Sphere{},
@@ -109,14 +100,11 @@ func TestMaterial_Lighting(t *testing.T) {
 		{
 			name: "lighting with the eye in the path of the reflection vector",
 			fields: fields{
-				Color{1, 1, 1},
-				0.1,
-				0.9,
-				0.9,
-				200.0,
-				nil,
-				false,
-				0.0,
+				Color:     Color{1, 1, 1},
+				Ambient:   0.1,
+				Diffuse:   0.9,
+				Specular:  0.9,
+				Shininess: 200.0,
 			},
 			args: args{
 				object: Sphere{},
@@ -134,14 +122,11 @@ func TestMaterial_Lighting(t *testing.T) {
 		{
 			name: "lighting with the eye between the light and the surface",
 			fields: fields{
-				Color{1, 1, 1},
-				0.1,
-				0.9,
-				0.9,
-				200.0,
-				nil,
-				false,
-				0.0,
+				Color:     Color{1, 1, 1},
+				Ambient:   0.1,
+				Diffuse:   0.9,
+				Specular:  0.9,
+				Shininess: 200.0,
 			},
 			args: args{
 				object: Sphere{},

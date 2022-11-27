@@ -113,14 +113,16 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				},
 			},
 			want: Computations{
-				T:         4,
-				Object:    s,
-				Point:     *NewPoint(0, 0, -1),
-				Eyev:      *NewVector(0, 0, -1),
-				Normalv:   *NewVector(0, 0, -1),
-				Inside:    false,
-				OverPoint: *NewPoint(0, 0, -1.00001),
-				Reflectv:  *NewVector(0, 0, -1),
+				T:          4,
+				Object:     s,
+				Point:      *NewPoint(0, 0, -1),
+				Eyev:       *NewVector(0, 0, -1),
+				Normalv:    *NewVector(0, 0, -1),
+				Inside:     false,
+				OverPoint:  *NewPoint(0, 0, -1.00001),
+				UnderPoint: *NewPoint(0, 0, -0.99999),
+
+				Reflectv: *NewVector(0, 0, -1),
 			},
 		},
 		{
@@ -136,14 +138,15 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				},
 			},
 			want: Computations{
-				T:         1,
-				Object:    s,
-				Point:     *NewPoint(0, 0, 1),
-				Eyev:      *NewVector(0, 0, -1),
-				Normalv:   *NewVector(0, 0, -1),
-				Inside:    true,
-				OverPoint: *NewPoint(0, 0, 1),
-				Reflectv:  *NewVector(0, 0, -1),
+				T:          1,
+				Object:     s,
+				Point:      *NewPoint(0, 0, 1),
+				Eyev:       *NewVector(0, 0, -1),
+				Normalv:    *NewVector(0, 0, -1),
+				Inside:     true,
+				OverPoint:  *NewPoint(0, 0, 1),
+				UnderPoint: *NewPoint(0, 0, 1.00001),
+				Reflectv:   *NewVector(0, 0, -1),
 			},
 		},
 		{
@@ -159,14 +162,15 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				},
 			},
 			want: Computations{
-				T:         1.4142135623730951,
-				Object:    Plane{},
-				Point:     *NewPoint(0, 0, 0),
-				Eyev:      *NewVector(0, 0.7071067811865476, -0.7071067811865476),
-				Normalv:   *NewVector(0, 1, 0),
-				Inside:    false,
-				OverPoint: *NewPoint(0, 0, 0),
-				Reflectv:  *NewVector(0, math.Sqrt(2)/2, math.Sqrt(2)/2),
+				T:          1.4142135623730951,
+				Object:     Plane{},
+				Point:      *NewPoint(0, 0, 0),
+				Eyev:       *NewVector(0, 0.7071067811865476, -0.7071067811865476),
+				Normalv:    *NewVector(0, 1, 0),
+				Inside:     false,
+				OverPoint:  *NewPoint(0, 0, 0),
+				UnderPoint: *NewPoint(0, -0.00001, 0),
+				Reflectv:   *NewVector(0, math.Sqrt(2)/2, math.Sqrt(2)/2),
 			},
 		},
 	}
@@ -177,9 +181,82 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				Object: tt.fields.Object,
 			}
 
-			if got := i.PrepareComputations(tt.args.r); !cmp.Equal(got, tt.want, float64Comparer) {
-				fmt.Println(cmp.Diff(got, tt.want))
+			if got := i.PrepareComputations(tt.args.r, nil); !cmp.Equal(got, tt.want, float64Comparer) {
+				fmt.Println(cmp.Diff(got, tt.want, float64Comparer))
 				t.Errorf("PrepareComputations() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIntersection_FindingN1AndN2(t *testing.T) {
+	a := NewGlassSphere()
+	a.Shape.ID = 1
+	a.Transform = Scaling(2, 2, 2)
+	a.Material.RefractiveIndex = 1.5
+
+	b := NewGlassSphere()
+	b.Shape.ID = 2
+	b.Transform = NewTranslation(0, 0, -0.25)
+	b.Material.RefractiveIndex = 2.0
+
+	c := NewGlassSphere()
+	c.Shape.ID = 3
+	c.Transform = NewTranslation(0, 0, 0.25)
+	c.Material.RefractiveIndex = 2.5
+
+	r := NewRay(
+		*NewPoint(0, 0, -4),
+		*NewVector(0, 0, 1),
+	)
+	xs := Intersections{
+		{
+			T:      2,
+			Object: a,
+		},
+		{
+			T:      2.75,
+			Object: b,
+		},
+		{
+			T:      3.25,
+			Object: c,
+		},
+		{
+			T:      4.75,
+			Object: b,
+		},
+		{
+			T:      5.25,
+			Object: c,
+		},
+		{
+			T:      6,
+			Object: a,
+		},
+	}
+
+	tests := []struct {
+		n1 float64
+		n2 float64
+	}{
+		{1, 1.5},
+		{1.5, 2},
+		{2, 2.5},
+		{2.5, 2.5},
+		{2.5, 1.5},
+		{1.5, 1.0},
+	}
+
+	for j, tt := range tests {
+		t.Run("tt.name", func(t *testing.T) {
+			got := xs[j].PrepareComputations(r, xs)
+			if !cmp.Equal(got.N1, tt.n1, float64Comparer) {
+				t.Errorf("PrepareComputations() N1 = %v, want %v", got.N1, tt.n1)
+			}
+
+			if !cmp.Equal(got.N2, tt.n2, float64Comparer) {
+				t.Errorf("PrepareComputations() N2 = %v, want %v", got.N2, tt.n2)
 			}
 		})
 	}
@@ -220,7 +297,7 @@ func TestIntersection_PrecomputingReflectionVector(t *testing.T) {
 				T:      tt.fields.T,
 				Object: tt.fields.Object,
 			}
-			if got := i.PrepareComputations(tt.args.r); !reflect.DeepEqual(got.Reflectv, tt.want) {
+			if got := i.PrepareComputations(tt.args.r, nil); !reflect.DeepEqual(got.Reflectv, tt.want) {
 				t.Errorf("PrepareComputations() = %v, want %v", got, tt.want)
 			}
 		})

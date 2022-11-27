@@ -61,6 +61,7 @@ func (c Camera) RayForPixel(px, py float64) Ray {
 }
 
 const RendererCount = 8
+const MaxReflections = 5
 
 func (c Camera) Render(w World) Canvas {
 	image := NewCanvas(int(c.Hsize), int(c.Vsize))
@@ -82,7 +83,7 @@ func (c Camera) Render(w World) Canvas {
 				for y := yStart; y <= yEnd; y++ {
 					for x := 0.0; x < c.Hsize; x++ {
 						r := c.RayForPixel(x, y)
-						color := w.ColorAt(r)
+						color := w.ColorAt(r, MaxReflections)
 						image.WritePixel(int(x), int(y), &color)
 						//messages <- Pixel{int(x), int(y), color}
 					}
