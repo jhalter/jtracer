@@ -490,6 +490,44 @@ func TestWorld_RefractedColor(t *testing.T) {
 			},
 			want: Black,
 		},
+		{
+			name: "the refracted color with a refracted ray",
+			fields: fields{
+				Light: dw.Light,
+				Objects: func() []Shaper {
+					s1 := NewSphere()
+					s1.Material = m1
+
+					s2 := NewSphere()
+					s2.Transform = Scaling(0.5, 0.5, 0.5)
+
+					return []Shaper{s1, s2}
+				}(),
+			},
+			args: args{
+				comps: func() Computations {
+					xs := Intersections{
+						{
+							T:      -math.Sqrt(2) / 2,
+							Object: glassySphere,
+						},
+						{
+							T:      math.Sqrt(2) / 2,
+							Object: glassySphere,
+						},
+					}
+					return xs[1].PrepareComputations(
+						NewRay(
+							*NewPoint(0, 0, math.Sqrt(2)/2),
+							*NewVector(0, 1, 0),
+						),
+						xs,
+					)
+				}(),
+				remaining: 5,
+			},
+			want: Black,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

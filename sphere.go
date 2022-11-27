@@ -12,7 +12,6 @@ type Sphere struct {
 
 func NewSphere() Sphere {
 	return Sphere{
-		ID: rand.Int(),
 		Shape: Shape{
 			Transform: IdentityMatrix,
 			Material:  NewMaterial(),
