@@ -13,6 +13,7 @@ type Sphere struct {
 func NewSphere() Sphere {
 	return Sphere{
 		Shape: Shape{
+			ID:        rand.Int(),
 			Transform: IdentityMatrix,
 			Material:  NewMaterial(),
 		},
@@ -36,9 +37,7 @@ func (s Sphere) GetMaterial() Material {
 	return s.Material
 }
 
-func (s Sphere) Intersects(r Ray) Intersections {
-	ray := r.Transform(s.Transform.Inverse())
-
+func (s Sphere) LocalIntersect(ray Ray) Intersections {
 	xs := Intersections{}
 
 	sphereToRay := ray.Origin.Subtract(NewPoint(0, 0, 0))
@@ -61,10 +60,30 @@ func (s Sphere) Intersects(r Ray) Intersections {
 	return xs
 }
 
-func (s Sphere) NormalAt(worldPoint Tuple) Tuple {
-	objectPoint := s.Transform.Inverse().MultiplyByTuple(worldPoint)
-	objectNormal := objectPoint.Subtract(NewPoint(0, 0, 0))
-	worldNormal := s.Transform.Inverse().Transpose().MultiplyByTuple(*objectNormal)
+func (s Sphere) LocalNormalAt(point Tuple) Tuple {
+	objectNormal := point.Subtract(NewPoint(0, 0, 0))
+
+	return *objectNormal
+}
+
+//func (s Sphere) NormalAt(worldPoint Tuple) Tuple {
+//	objectPoint := s.Transform.Inverse().MultiplyByTuple(worldPoint)
+//	objectNormal := objectPoint.Subtract(NewPoint(0, 0, 0))
+//	worldNormal := s.Transform.Inverse().Transpose().MultiplyByTuple(*objectNormal)
+//	worldNormal.W = 0
+//
+//	return *worldNormal.Normalize()
+//}
+
+func Intersects(s Shaper, r Ray) Intersections {
+	localRay := r.Transform(s.GetTransform().Inverse())
+	return s.LocalIntersect(localRay)
+}
+
+func NormalAt(s Shaper, worldPoint Tuple) Tuple {
+	localPoint := s.GetTransform().Inverse().MultiplyByTuple(worldPoint)
+	objectNormal := s.LocalNormalAt(localPoint)
+	worldNormal := s.GetTransform().Inverse().Transpose().MultiplyByTuple(objectNormal)
 	worldNormal.W = 0
 
 	return *worldNormal.Normalize()

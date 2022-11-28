@@ -152,8 +152,10 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 		{
 			name: "precomputing the reflection vector",
 			fields: fields{
-				T:      math.Sqrt(2),
-				Object: Plane{},
+				T: math.Sqrt(2),
+				Object: Plane{
+					Shape: Shape{Transform: IdentityMatrix},
+				},
 			},
 			args: args{
 				r: Ray{
@@ -162,8 +164,10 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				},
 			},
 			want: Computations{
-				T:          1.4142135623730951,
-				Object:     Plane{},
+				T: 1.4142135623730951,
+				Object: Plane{
+					Shape: Shape{Transform: IdentityMatrix},
+				},
 				Point:      *NewPoint(0, 0, 0),
 				Eyev:       *NewVector(0, 0.7071067811865476, -0.7071067811865476),
 				Normalv:    *NewVector(0, 1, 0),
@@ -280,7 +284,7 @@ func TestIntersection_PrecomputingReflectionVector(t *testing.T) {
 			name: "precomputing the reflection vector",
 			fields: fields{
 				T:      math.Sqrt(2),
-				Object: Plane{},
+				Object: NewPlane(),
 			},
 			args: args{
 				r: Ray{

@@ -2,7 +2,7 @@ package jtracer
 
 import "math"
 
-func NewTranslation(x float64, y float64, z float64) Matrix {
+func NewTranslation(x, y, z float64) Matrix {
 	return Matrix{
 		{1, 0, 0, x},
 		{0, 1, 0, y},
@@ -11,7 +11,7 @@ func NewTranslation(x float64, y float64, z float64) Matrix {
 	}
 }
 
-func Scaling(x float64, y float64, z float64) Matrix {
+func Scaling(x, y, z float64) Matrix {
 	return Matrix{
 		{x, 0, 0, 0},
 		{0, y, 0, 0},

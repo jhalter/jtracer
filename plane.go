@@ -1,6 +1,9 @@
 package jtracer
 
-import "math"
+import (
+	"math"
+	"math/rand"
+)
 
 type Plane struct {
 	ID int
@@ -8,14 +11,20 @@ type Plane struct {
 }
 
 func NewPlane() Plane {
-	return Plane{}
+	return Plane{
+		Shape: Shape{
+			ID:        rand.Int(),
+			Transform: IdentityMatrix,
+			Material:  NewMaterial(),
+		},
+	}
 }
 
-func (p Plane) NormalAt(_ Tuple) Tuple {
+func (p Plane) LocalNormalAt(_ Tuple) Tuple {
 	return *NewVector(0, 1, 0)
 }
 
-func (p Plane) Intersects(r Ray) Intersections {
+func (p Plane) LocalIntersect(r Ray) Intersections {
 	if math.Abs(r.Direction.Y) < epsilon {
 		return Intersections{}
 	}

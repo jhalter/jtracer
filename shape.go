@@ -2,11 +2,11 @@ package jtracer
 
 // TODO: What should I name this interface?
 type Shaper interface {
-	Intersects(r Ray) Intersections
-	NormalAt(worldPoint Tuple) Tuple
 	GetMaterial() Material
 	GetTransform() Matrix
 	GetID() int
+	LocalNormalAt(Tuple) Tuple
+	LocalIntersect(Ray) Intersections
 }
 
 type Shape struct {

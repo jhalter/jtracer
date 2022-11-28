@@ -9,18 +9,6 @@ var IdentityMatrix = Matrix{
 	{0, 0, 0, 1},
 }
 
-func (m Matrix) Equal(m2 Matrix) bool {
-	for row := 0; row < len(m); row++ {
-		for col := 0; col < len(m[0]); col++ {
-			if !floatEquals(m[row][col], m2[row][col]) {
-				return false
-			}
-		}
-	}
-
-	return true
-}
-
 func (m Matrix) Multiply(m2 Matrix) Matrix {
 	m3 := make(Matrix, len(m))
 

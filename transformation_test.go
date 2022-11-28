@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"github.com/google/go-cmp/cmp"
 	"math"
 	"reflect"
 	"testing"
@@ -118,7 +119,7 @@ func TestViewTransform(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ViewTransform(tt.args.from, tt.args.to, tt.args.up); !got.Equal(tt.want) {
+			if got := ViewTransform(tt.args.from, tt.args.to, tt.args.up); !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("ViewTransform() = %v, want %v", got, tt.want)
 			}
 		})

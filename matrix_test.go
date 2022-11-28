@@ -7,58 +7,6 @@ import (
 	"testing"
 )
 
-func TestMatrix_Equal(t *testing.T) {
-	type args struct {
-		m2 Matrix
-	}
-	tests := []struct {
-		name string
-		m    Matrix
-		args args
-		want bool
-	}{
-		{
-			name: "matrix equality with identical matrices",
-			m: Matrix{
-				{1, 2, 3, 4},
-				{5.5, 6.5, 7.5, 8.5},
-				{9, 10, 11, 12},
-				{13.5, 14.5, 15.5, 16.5},
-			},
-			args: args{m2: Matrix{
-				{1, 2, 3, 4},
-				{5.5, 6.5, 7.5, 8.5},
-				{9, 10, 11, 12},
-				{13.5, 14.5, 15.5, 16.5},
-			}},
-			want: true,
-		},
-		{
-			name: "matrix equality with identical matrices",
-			m: Matrix{
-				{1, 2, 3, 4},
-				{5.5, 6.5, 7.5, 8.5},
-				{9, 10, 11, 12},
-				{13.5, 14.5, 15.5, 16.5},
-			},
-			args: args{m2: Matrix{
-				{11, 2, 3, 4},
-				{5.5, 6.5, 7.5, 8.5},
-				{9, 10, 11, 12},
-				{13.5, 14.5, 15.5, 16.5},
-			}},
-			want: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.m.Equal(tt.args.m2); got != tt.want {
-				t.Errorf("Equal() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestMatrix_Multiply(t *testing.T) {
 	type args struct {
 		m2 Matrix
@@ -557,7 +505,7 @@ func TestMatrix_Inverse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.m.Inverse(); !got.Equal(tt.want) {
+			if got := tt.m.Inverse(); !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("Inverse() = %v, want %v", got, tt.want)
 			}
 		})

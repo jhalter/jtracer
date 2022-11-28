@@ -300,22 +300,22 @@ func TestWorld_ReflectedColor(t *testing.T) {
 		},
 		//	TODO: Figure out why this is failing
 		//
-		//{
-		//		name:   "the reflected color for a reflective material",
-		//		fields: fields(defaultWorldWithReflectivePlane),
-		//		args: args{
-		//			comps: func() Computations {
-		//				i := Intersection{T: math.Sqrt(2), Object: defaultWorldWithReflectivePlane.Objects[2]}
-		//				return i.PrepareComputations(
-		//					NewRay(
-		//						*NewPoint(0, 0, -3),
-		//						*NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
-		//					),
-		//				)
-		//			}(),
-		//		},
-		//		want: Color{0.19032, 0.2379, 0.14274},
-		//	},
+		{
+			name:   "the reflected color for a reflective material",
+			fields: fields(defaultWorldWithReflectivePlane),
+			args: args{
+				comps: func() Computations {
+					i := Intersection{T: math.Sqrt(2), Object: defaultWorldWithReflectivePlane.Objects[2]}
+					return i.PrepareComputations(
+						NewRay(
+							*NewPoint(0, 0, -3),
+							*NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+						), nil,
+					)
+				}(),
+			},
+			want: Color{0.19032, 0.2379, 0.14274},
+		},
 		{
 			name:   "the reflected color at the maximum recursive depth",
 			fields: fields(defaultWorldWithReflectivePlane),
@@ -355,6 +355,34 @@ func TestWorld_RefractedColor(t *testing.T) {
 	m1.Transparency = 1.0
 	m1.RefractiveIndex = 1.5
 	glassySphere.Material = m1
+
+	s1 := Sphere{
+		Shape: Shape{
+			Transform: IdentityMatrix,
+			Material: Material{
+				Color:           Color{0.8, 1.0, 0.6},
+				Ambient:         1.0,
+				Diffuse:         0.7,
+				Specular:        0.2,
+				Shininess:       200.0,
+				RefractiveIndex: 1.0,
+			},
+		},
+	}
+	s2 := Sphere{
+		Shape: Shape{
+			Transform: Scaling(0.5, 0.5, 0.5),
+			Material: Material{
+				Color:           White,
+				Ambient:         0.1,
+				Diffuse:         0.9,
+				Specular:        0.9,
+				Shininess:       200.0,
+				RefractiveIndex: 1.5,
+				Transparency:    1.0,
+			},
+		},
+	}
 
 	type fields struct {
 		Objects []Shaper
@@ -493,32 +521,32 @@ func TestWorld_RefractedColor(t *testing.T) {
 		{
 			name: "the refracted color with a refracted ray",
 			fields: fields{
-				Light: dw.Light,
-				Objects: func() []Shaper {
-					s1 := NewSphere()
-					s1.Material = m1
-
-					s2 := NewSphere()
-					s2.Transform = Scaling(0.5, 0.5, 0.5)
-
-					return []Shaper{s1, s2}
-				}(),
+				Light:   dw.Light,
+				Objects: []Shaper{s1, s2},
 			},
 			args: args{
 				comps: func() Computations {
 					xs := Intersections{
 						{
-							T:      -math.Sqrt(2) / 2,
-							Object: glassySphere,
+							T:      -0.9899,
+							Object: s1,
 						},
 						{
-							T:      math.Sqrt(2) / 2,
-							Object: glassySphere,
+							T:      -0.4899,
+							Object: s2,
+						},
+						{
+							T:      0.4899,
+							Object: s2,
+						},
+						{
+							T:      0.9899,
+							Object: s1,
 						},
 					}
-					return xs[1].PrepareComputations(
+					return xs[2].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, math.Sqrt(2)/2),
+							*NewPoint(0, 0, 0.1),
 							*NewVector(0, 1, 0),
 						),
 						xs,
@@ -526,7 +554,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 				}(),
 				remaining: 5,
 			},
-			want: Black,
+			want: Color{0, 0.99888, 0.04725},
 		},
 	}
 	for _, tt := range tests {

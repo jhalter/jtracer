@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"math"
 	"sort"
 )
 
@@ -49,7 +50,7 @@ func (w World) Intersect(r Ray) Intersections {
 	xs := Intersections{}
 
 	for _, object := range w.Objects {
-		newxs := object.Intersects(r)
+		newxs := Intersects(object, r)
 		xs = append(xs, newxs...)
 	}
 	sort.Sort(xs)
@@ -61,12 +62,10 @@ func (w World) ColorAt(r Ray, remaining int) Color {
 	xs := w.Intersect(r)
 	hit := xs.Hit()
 	if hit == nil {
-		//spew.Dump("NOHIT")
 		return Black
 	}
 
-	//spew.Dump("HIT color", hit.Object.GetMaterial().Color)
-	comps := hit.PrepareComputations(r, nil)
+	comps := hit.PrepareComputations(r, xs)
 	return w.ShadeHit(comps, remaining)
 }
 
@@ -75,11 +74,13 @@ func (w World) ShadeHit(comps Computations, remaining int) Color {
 
 	surface := comps.Object.GetMaterial().Lighting(comps.Object, w.Light, comps.OverPoint, comps.Eyev, comps.Normalv, shadowed)
 	reflected := w.ReflectedColor(comps, remaining)
+	refracted := w.RefractedColor(comps, remaining)
+
 	//
 	//spew.Dump(comps.Object.GetMaterial())
 	//spew.Dump(w.Light)
 
-	return *surface.Add(&reflected)
+	return *surface.Add(&reflected).Add(&refracted)
 }
 
 func (w World) IsShadowed(p Tuple) bool {
@@ -132,6 +133,40 @@ func (w World) RefractedColor(comps Computations, remaining int) Color {
 	}
 	// End check for total internal reflection TODO: move to function?
 
-	return White
+	// Find cos(theta_t) via trigonometric identity
+	//cos_t ← sqrt(1.0 - sin2_t)
+
+	cosT := math.Sqrt(1.0 - sin2T)
+
+	// Compute the direction of the refracted ray
+	//direction ← comps.normalv * (n_ratio * cos_i - cos_t) -
+	//             comps.eyev * n_ratio
+
+	//foo := (nRatio * cosI) - cosT
+	//foo2 := comps.Eyev.Multiply(nRatio)
+
+	baz1 := comps.Normalv.Multiply((nRatio * cosI) - cosT)
+	baz2 := comps.Eyev.Multiply(nRatio)
+
+	direction := baz1.Subtract(baz2)
+
+	// Create the refracted ray
+	//refract_ray ← ray(comps.under_point, direction)
+	refractRay := NewRay(comps.UnderPoint, *direction)
+
+	//
+	//# Find the color of the refracted ray, making sure to multiply
+	//
+	//# by the transparency value to account for any opacity
+	//color ← color_at(world, refract_ray, remaining - 1) *
+	//         comps.object.material.transparency
+
+	color := w.ColorAt(refractRay, remaining-1)
+	//spew.Dump("colorAt", comps.Object.GetID(), color)
+	color = *color.MultiplyByScalar(comps.Object.GetMaterial().Transparency)
+
+	//spew.Dump("refractedColor", color)
+
+	return color
 
 }

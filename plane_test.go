@@ -48,7 +48,7 @@ func TestPlane_NormalAt(t *testing.T) {
 				ID:    tt.fields.ID,
 				Shape: tt.fields.Shape,
 			}
-			if got := p.NormalAt(tt.args.in0); !reflect.DeepEqual(got, tt.want) {
+			if got := p.LocalNormalAt(tt.args.in0); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NormalAt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -140,7 +140,7 @@ func TestPlane_Intersects(t *testing.T) {
 				ID:    tt.fields.ID,
 				Shape: tt.fields.Shape,
 			}
-			if got := p.Intersects(tt.args.r); !reflect.DeepEqual(got, tt.want) {
+			if got := p.LocalIntersect(tt.args.r); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Intersects() = %v, want %v", got, tt.want)
 			}
 		})

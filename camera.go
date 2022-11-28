@@ -2,6 +2,7 @@ package jtracer
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"math"
 	"sync"
 )
@@ -71,6 +72,20 @@ func (c Camera) Render(w World) Canvas {
 
 	waitCh := make(chan struct{})
 
+	yComplete := 0
+	yDone := make(chan int, 1024)
+	go func() {
+		for {
+			<-yDone
+			yComplete++
+			spew.Dump(yComplete)
+			if yComplete%100 == 0 {
+				fmt.Printf("%v", float64(yComplete)/c.Vsize)
+				image.SavePNG("chapter10.png")
+			}
+		}
+	}()
+
 	go func() {
 		for i := 0; i < RendererCount; i++ {
 			chunkSize := c.Vsize / RendererCount
@@ -81,6 +96,7 @@ func (c Camera) Render(w World) Canvas {
 				defer wg.Done()
 				fmt.Printf("%v to %v\n", yStart, yEnd)
 				for y := yStart; y <= yEnd; y++ {
+					yDone <- 1
 					for x := 0.0; x < c.Hsize; x++ {
 						r := c.RayForPixel(x, y)
 						color := w.ColorAt(r, MaxReflections)

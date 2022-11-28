@@ -27,7 +27,7 @@ func main() {
 			worldX := -half + pixelSize*x
 			position := jtracer.NewPoint(worldX, worldY, wallZ)
 
-			xs := shape.Intersects(jtracer.Ray{
+			xs := shape.LocalIntersect(jtracer.Ray{
 				Origin:    *rayOrigin,
 				Direction: *position.Subtract(rayOrigin).Normalize(),
 			})

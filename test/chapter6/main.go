@@ -37,12 +37,12 @@ func main() {
 			position := jtracer.NewPoint(worldX, worldY, wallZ)
 
 			r := jtracer.Ray{Origin: *rayOrigin, Direction: *position.Subtract(rayOrigin).Normalize()}
-			xs := shape.Intersects(r)
+			xs := shape.LocalIntersect(r)
 
 			hit := xs.Hit()
 			if hit != nil {
 				point := r.Position(hit.T)
-				normal := shape.NormalAt(*point)
+				normal := shape.LocalNormalAt(*point)
 				eye := r.Direction.Negate()
 
 				color = shape.Material.Lighting(nil, light, *point, *eye, normal, false)

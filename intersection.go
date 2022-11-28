@@ -116,7 +116,7 @@ func (i Intersection) PrepareComputations(r Ray, xs Intersections) Computations 
 
 	comps.Point = *r.Position(comps.T)
 	comps.Eyev = *r.Direction.Negate()
-	comps.Normalv = comps.Object.NormalAt(comps.Point)
+	comps.Normalv = NormalAt(comps.Object, comps.Point)
 
 	if comps.Normalv.Dot(&comps.Eyev) < 0 {
 		comps.Inside = true

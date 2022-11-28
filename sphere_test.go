@@ -1,9 +1,9 @@
 package jtracer
 
 import (
+	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"math"
-	"reflect"
 	"testing"
 )
 
@@ -103,37 +103,38 @@ func TestSphere_Intersects(t *testing.T) {
 				{T: -4, Object: Sphere{ID: 1, Shape: Shape{Transform: IdentityMatrix}}},
 			},
 		},
-		{
-			name: "intersecting a scaled sphere with a ray",
-			fields: fields{
-				id:        1,
-				Transform: Scaling(2, 2, 2),
-			},
-			args: args{
-				r: Ray{
-					Origin:    *NewPoint(0, 0, -5),
-					Direction: *NewVector(0, 0, 1),
-				},
-			},
-			want: Intersections{
-				{T: 3, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
-				{T: 7, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
-			},
-		},
-		{
-			name: "intersecting a translated sphere with a ray",
-			fields: fields{
-				id:        1,
-				Transform: NewTranslation(5, 0, 0),
-			},
-			args: args{
-				r: Ray{
-					Origin:    *NewPoint(0, 0, -5),
-					Direction: *NewVector(0, 0, 1),
-				},
-			},
-			want: Intersections{},
-		},
+		// TODO: Reimplement after refactor to use LocalIntersect
+		//{
+		//	name: "intersecting a scaled sphere with a ray",
+		//	fields: fields{
+		//		id:        1,
+		//		Transform: Scaling(2, 2, 2),
+		//	},
+		//	args: args{
+		//		r: Ray{
+		//			Origin:    *NewPoint(0, 0, -5),
+		//			Direction: *NewVector(0, 0, 1),
+		//		},
+		//	},
+		//	want: Intersections{
+		//		{T: 3, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
+		//		{T: 7, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
+		//	},
+		//},
+		//{
+		//	name: "intersecting a translated sphere with a ray",
+		//	fields: fields{
+		//		id:        1,
+		//		Transform: NewTranslation(5, 0, 0),
+		//	},
+		//	args: args{
+		//		r: Ray{
+		//			Origin:    *NewPoint(0, 0, -5),
+		//			Direction: *NewVector(0, 0, 1),
+		//		},
+		//	},
+		//	want: Intersections{},
+		//},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -141,7 +142,8 @@ func TestSphere_Intersects(t *testing.T) {
 				ID:    tt.fields.id,
 				Shape: Shape{Transform: tt.fields.Transform},
 			}
-			if got := s.Intersects(tt.args.r); !reflect.DeepEqual(got, tt.want) {
+			if got := s.LocalIntersect(tt.args.r); !cmp.Equal(got, tt.want, float64Comparer) {
+				fmt.Println(cmp.Diff(tt.want, got, float64Comparer))
 				t.Errorf("Intersects() = %v, want %v", got, tt.want)
 			}
 		})
@@ -218,7 +220,7 @@ func TestSphere_NormalAt(t *testing.T) {
 				ID:    tt.fields.id,
 				Shape: Shape{Transform: tt.fields.Transform},
 			}
-			if got := s.NormalAt(tt.args.worldPoint); !cmp.Equal(got, tt.want, float64Comparer) {
+			if got := s.LocalNormalAt(tt.args.worldPoint); !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("NormalAt() = %v, want %v", got, tt.want)
 			}
 		})
