@@ -19,7 +19,7 @@ func NewWorld() World {
 func DefaultWorld() World {
 	return World{
 		Objects: []Shaper{
-			Sphere{
+			&Sphere{
 				Shape: Shape{
 					Transform: IdentityMatrix,
 					Material: Material{
@@ -32,7 +32,7 @@ func DefaultWorld() World {
 					},
 				},
 			},
-			Sphere{
+			&Sphere{
 				Shape: Shape{
 					Transform: Scaling(0.5, 0.5, 0.5),
 					Material:  NewMaterial(),

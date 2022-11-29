@@ -62,7 +62,7 @@ func (c Camera) RayForPixel(px, py float64) Ray {
 }
 
 const RendererCount = 8
-const MaxReflections = 8
+const MaxReflections = 5
 
 func (c Camera) Render(w World) Canvas {
 	image := NewCanvas(int(c.Hsize), int(c.Vsize))
@@ -81,7 +81,6 @@ func (c Camera) Render(w World) Canvas {
 			spew.Dump(yComplete)
 			if yComplete%100 == 0 {
 				fmt.Printf("%v", float64(yComplete)/c.Vsize)
-				image.SavePNG("chapter10.png")
 			}
 		}
 	}()

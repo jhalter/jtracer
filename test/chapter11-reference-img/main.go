@@ -1,6 +1,12 @@
 package main
 
 import (
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+)
+
+import (
 	"jtracer"
 )
 
@@ -191,13 +197,15 @@ import (
 */
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
+	wallPattern := jtracer.NewStripePattern(jtracer.Color{0.45, 0.45, 0.45}, jtracer.Color{0.55, 0.55, 0.55})
+	wallPattern.SetTransform(jtracer.RotationY(1.5708).Multiply(jtracer.Scaling(0.25, 0.25, 0.25)))
 	wallMaterial := jtracer.Material{
-		HasPattern: true,
-		Pattern: jtracer.StripePattern{
-			A:         jtracer.Color{0.45, 0.45, 0.45},
-			B:         jtracer.Color{0.55, 0.55, 0.55},
-			Transform: jtracer.RotationY(1.5708).Multiply(jtracer.Scaling(0.25, 0.25, 0.25)),
-		},
+		HasPattern:      true,
+		Pattern:         &wallPattern,
 		Diffuse:         0.4,
 		Reflectivity:    0.3,
 		RefractiveIndex: 1.0,
@@ -205,74 +213,81 @@ func main() {
 
 	// # the checkered floor
 	floor := jtracer.NewPlane()
-	floor.Transform = jtracer.RotationY(0.31415)
+	floor.SetTransform(jtracer.RotationY(0.31415))
+	floorPattern := jtracer.NewCheckersPattern(
+		jtracer.Color{Red: 0.35, Green: 0.35, Blue: 0.35},
+		jtracer.Color{Red: 0.65, Green: 0.65, Blue: 0.65},
+	)
+	floorPattern.SetTransform(jtracer.IdentityMatrix)
 	floor.Material = jtracer.NewMaterial()
 	floor.Material.Color = jtracer.Color{Red: 0.5, Green: 0.5, Blue: 0.5}
 	floor.Material.Specular = 0
 	floor.Material.HasPattern = true
-	floor.Material.Pattern = jtracer.CheckersPattern{
-		A:         jtracer.Color{Red: 0.35, Green: 0.35, Blue: 0.35},
-		B:         jtracer.Color{Red: 0.65, Green: 0.65, Blue: 0.65},
-		Transform: jtracer.IdentityMatrix,
-	}
+	floor.Material.Pattern = &floorPattern
 	floor.Material.Reflectivity = 0.4
 
 	// # west wall
 	westWall := jtracer.NewPlane()
-	westWall.Shape.Transform = jtracer.NewTranslation(-5, 0, 0).
+	westWall.SetTransform(jtracer.NewTranslation(-5, 0, 0).
 		Multiply(jtracer.RotationZ(1.5708)).
-		Multiply(jtracer.RotationY(1.5708))
+		Multiply(jtracer.RotationY(1.5708)))
 	westWall.Material = wallMaterial
 
 	// # east wall
 	eastWall := jtracer.NewPlane()
-	eastWall.Shape.Transform = jtracer.NewTranslation(5, 0, 0).
+	eastWall.SetTransform(jtracer.NewTranslation(5, 0, 0).
 		Multiply(jtracer.RotationZ(1.5708)).
-		Multiply(jtracer.RotationY(1.5708))
+		Multiply(jtracer.RotationY(1.5708)))
 	eastWall.Material = wallMaterial
 
 	northWall := jtracer.NewPlane()
-	northWall.Shape.Transform = jtracer.NewTranslation(0, 0, 5).
-		Multiply(jtracer.RotationX(1.5708))
+	northWall.SetTransform(jtracer.NewTranslation(0, 0, 5).
+		Multiply(jtracer.RotationX(1.5708)))
 	northWall.Material = wallMaterial
 
 	southWall := jtracer.NewPlane()
-	southWall.Shape.Transform = jtracer.NewTranslation(0, 0, -5).Multiply(jtracer.RotationX(1.5708))
+	southWall.SetTransform(jtracer.NewTranslation(0, 0, -5).Multiply(jtracer.RotationX(1.5708)))
 	southWall.Material = wallMaterial
 
 	// background balls
 	s1 := jtracer.NewSphere()
-	s1.Transform = jtracer.NewTranslation(4.6, 0.4, 1).Multiply(jtracer.Scaling(0.4, 0.4, 0.4))
+	s1.SetTransform(jtracer.NewTranslation(4.6, 0.4, 1).Multiply(jtracer.Scaling(0.4, 0.4, 0.4)))
 	s1.Material.Color = jtracer.Color{0.8, 0.5, 0.3}
 	s1.Material.Shininess = 50
 
 	s2 := jtracer.NewSphere()
-	s2.Transform = jtracer.NewTranslation(4.7, 0.3, 0.3).
-		Multiply(jtracer.Scaling(0.3, 0.3, 0.3))
+	s2.SetTransform(jtracer.NewTranslation(4.7, 0.3, 0.3).
+		Multiply(jtracer.Scaling(0.3, 0.3, 0.3)),
+	)
 	s2.Material.Color = jtracer.Color{0.9, 0.4, 0.5}
 	s2.Material.Shininess = 50
 
 	s3 := jtracer.NewSphere()
-	s3.Transform = jtracer.NewTranslation(-1, 0.5, 4.5).
-		Multiply(jtracer.Scaling(0.5, 0.5, 0.5))
+	s3.SetTransform(jtracer.NewTranslation(-1, 0.5, 4.5).
+		Multiply(jtracer.Scaling(0.5, 0.5, 0.5)))
 	s3.Material.Color = jtracer.Color{0.4, 0.9, 0.6}
 	s3.Material.Shininess = 50
 
 	s4 := jtracer.NewSphere()
-	s4.Transform = jtracer.NewTranslation(-1.7, 0.3, 4.7).
-		Multiply(jtracer.Scaling(0.3, 0.3, 0.3))
+	s4.SetTransform(
+		jtracer.NewTranslation(-1.7, 0.3, 4.7).
+			Multiply(jtracer.Scaling(0.3, 0.3, 0.3)),
+	)
 	s4.Material.Color = jtracer.Color{0.4, 0.6, 0.9}
 	s4.Material.Shininess = 50
 
 	// foreground balls
 	fg1 := jtracer.NewSphere()
-	fg1.Transform = jtracer.NewTranslation(-0.6, 1, 0.6)
+	fg1.SetTransform(jtracer.NewTranslation(-0.6, 1, 0.6))
 	fg1.Material.Color = jtracer.Color{1, 0.3, 0.2}
 	fg1.Material.Shininess = 5
 	fg1.Material.Specular = 0.4
 
 	fg2 := jtracer.NewSphere()
-	fg2.Transform = jtracer.NewTranslation(0.6, 0.7, -0.6).Multiply(jtracer.Scaling(0.7, 0.7, 0.7))
+	fg2.SetTransform(
+		jtracer.NewTranslation(0.6, 0.7, -0.6).
+			Multiply(jtracer.Scaling(0.7, 0.7, 0.7)),
+	)
 	fg2.Material.Color = jtracer.Color{0, 0, 0.2}
 	fg2.Material.Ambient = 0
 	fg2.Material.Diffuse = 0.4
@@ -283,8 +298,10 @@ func main() {
 	fg2.Material.RefractiveIndex = 1.5
 
 	fg3 := jtracer.NewSphere()
-	fg3.Transform = jtracer.NewTranslation(-0.7, 0.5, -0.8).
-		Multiply(jtracer.Scaling(0.5, 0.5, 0.5))
+	fg3.SetTransform(
+		jtracer.NewTranslation(-0.7, 0.5, -0.8).
+			Multiply(jtracer.Scaling(0.5, 0.5, 0.5)),
+	)
 	fg3.Material.Color = jtracer.Color{0, 0.2, 0.0}
 	fg3.Material.Ambient = 0
 	fg3.Material.Diffuse = 0.4
@@ -296,7 +313,7 @@ func main() {
 
 	// -----
 	world := jtracer.World{
-		Objects: []jtracer.Shaper{floor, eastWall, westWall, northWall, southWall, s1, s2, s3, s4, fg1, fg2, fg3},
+		Objects: []jtracer.Shaper{&floor, &eastWall, &westWall, &northWall, &southWall, &s1, &s2, &s3, &s4, &fg1, &fg2, &fg3},
 		Light:   jtracer.NewPointLight(*jtracer.NewPoint(-4.9, 4.9, -1), jtracer.Color{Red: 1, Green: 1, Blue: 1}),
 	}
 

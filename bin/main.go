@@ -3,8 +3,11 @@ package main
 import (
 	"flag"
 	"jtracer"
+	"log"
 	"math"
+	"net/http"
 )
+import _ "net/http/pprof"
 
 func main() {
 	height := flag.Float64("height", 600.0, "Height of output image")
@@ -13,6 +16,10 @@ func main() {
 
 	flag.Parse()
 
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+	
 	world := jtracer.DefaultWorld()
 	camera := jtracer.NewCamera(*height, *width, math.Pi/3)
 	camera.Transform = jtracer.ViewTransform(

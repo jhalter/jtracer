@@ -258,12 +258,12 @@ func TestWorld_IsShadowed(t *testing.T) {
 func TestWorld_ReflectedColor(t *testing.T) {
 
 	defaultWorldWithReflectivePlane := dw
+	m := NewMaterial()
+	m.Reflectivity = 0.5
 	defaultWorldWithReflectivePlane.Objects = append(dw.Objects, Plane{
 		Shape: Shape{
 			Transform: NewTranslation(0, -1, 0),
-			Material: Material{
-				Reflectivity: 0.5,
-			},
+			Material:  m,
 		},
 	})
 

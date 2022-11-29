@@ -20,11 +20,11 @@ func NewPlane() Plane {
 	}
 }
 
-func (p Plane) LocalNormalAt(_ Tuple) Tuple {
+func (p *Plane) LocalNormalAt(_ Tuple) Tuple {
 	return *NewVector(0, 1, 0)
 }
 
-func (p Plane) LocalIntersect(r Ray) Intersections {
+func (p *Plane) LocalIntersect(r Ray) Intersections {
 	if math.Abs(r.Direction.Y) < epsilon {
 		return Intersections{}
 	}
