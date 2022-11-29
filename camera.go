@@ -2,7 +2,6 @@ package jtracer
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"math"
 	"sync"
 )
@@ -78,7 +77,7 @@ func (c Camera) Render(w World) Canvas {
 		for {
 			<-yDone
 			yComplete++
-			spew.Dump(yComplete)
+			//spew.Dump(yComplete)
 			if yComplete%100 == 0 {
 				fmt.Printf("%v", float64(yComplete)/c.Vsize)
 			}

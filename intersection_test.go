@@ -18,7 +18,7 @@ func TestIntersections_Hit(t *testing.T) {
 			name: "the hit, when all intersections have positive t",
 			i: Intersections{
 				{
-					T: 1, Object: Sphere{ID: 1},
+					T: 1, Object: NewSphere(),
 				},
 				{
 					T: 2, Object: Sphere{ID: 1},

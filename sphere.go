@@ -10,8 +10,8 @@ type Sphere struct {
 	Shape
 }
 
-func NewSphere() Sphere {
-	return Sphere{
+func NewSphere() *Sphere {
+	return &Sphere{
 		Shape: Shape{
 			ID:        rand.Int(),
 			Transform: IdentityMatrix,
@@ -65,15 +65,6 @@ func (s *Sphere) LocalNormalAt(point Tuple) Tuple {
 
 	return *objectNormal
 }
-
-//func (s Sphere) NormalAt(worldPoint Tuple) Tuple {
-//	objectPoint := s.Transform.Inverse().MultiplyByTuple(worldPoint)
-//	objectNormal := objectPoint.Subtract(NewPoint(0, 0, 0))
-//	worldNormal := s.Transform.Inverse().Transpose().MultiplyByTuple(*objectNormal)
-//	worldNormal.W = 0
-//
-//	return *worldNormal.Normalize()
-//}
 
 func Intersects(s Shaper, r Ray) Intersections {
 	//localRay := r.Transform(s.GetTransform().Inverse())

@@ -10,8 +10,8 @@ type Plane struct {
 	Shape
 }
 
-func NewPlane() Plane {
-	return Plane{
+func NewPlane() *Plane {
+	return &Plane{
 		Shape: Shape{
 			ID:        rand.Int(),
 			Transform: IdentityMatrix,

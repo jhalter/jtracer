@@ -313,7 +313,7 @@ func main() {
 
 	// -----
 	world := jtracer.World{
-		Objects: []jtracer.Shaper{&floor, &eastWall, &westWall, &northWall, &southWall, &s1, &s2, &s3, &s4, &fg1, &fg2, &fg3},
+		Objects: []jtracer.Shaper{floor, eastWall, westWall, northWall, southWall, s1, s2, s3, s4, fg1, fg2, fg3},
 		Light:   jtracer.NewPointLight(*jtracer.NewPoint(-4.9, 4.9, -1), jtracer.Color{Red: 1, Green: 1, Blue: 1}),
 	}
 
