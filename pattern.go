@@ -1,16 +1,41 @@
 package jtracer
 
-import "math"
+import (
+	"math"
+)
 
 type Patterny interface {
 	ColorAt(Tuple) Color
-	ColorAtObject(Shaper, Tuple) Color
+	GetTransform() Matrix
 }
 
 type StripePattern struct {
 	A         Color
 	B         Color
 	Transform Matrix
+}
+
+func PatternAtShape(patterny Patterny, shape Shaper, worldPoint Tuple) Color {
+	objectPoint := shape.GetTransform().Inverse().MultiplyByTuple(worldPoint)
+	patternPoint := patterny.GetTransform().Inverse().MultiplyByTuple(objectPoint)
+
+	return patterny.ColorAt(patternPoint)
+}
+
+func NewTestPattern() TestPattern {
+	return TestPattern{Transform: IdentityMatrix}
+}
+
+type TestPattern struct {
+	Transform Matrix
+}
+
+func (p TestPattern) ColorAt(point Tuple) Color {
+	return Color{point.X, point.Y, point.Z}
+}
+
+func (p TestPattern) GetTransform() Matrix {
+	return p.Transform
 }
 
 func NewStripePattern(a Color, b Color) StripePattern {
@@ -24,12 +49,8 @@ func (s StripePattern) ColorAt(p Tuple) Color {
 
 	return s.B
 }
-
-func (s StripePattern) ColorAtObject(object Shaper, worldPoint Tuple) Color {
-	objectPoint := object.GetTransform().Inverse().MultiplyByTuple(worldPoint)
-	patternPoint := s.Transform.Inverse().MultiplyByTuple(objectPoint)
-
-	return s.ColorAt(patternPoint)
+func (s StripePattern) GetTransform() Matrix {
+	return s.Transform
 }
 
 type CheckersPattern struct {
@@ -49,10 +70,6 @@ func (s CheckersPattern) ColorAt(p Tuple) Color {
 
 	return s.B
 }
-
-func (s CheckersPattern) ColorAtObject(object Shaper, worldPoint Tuple) Color {
-	objectPoint := object.GetTransform().Inverse().MultiplyByTuple(worldPoint)
-	patternPoint := s.Transform.Inverse().MultiplyByTuple(objectPoint)
-
-	return s.ColorAt(patternPoint)
+func (s CheckersPattern) GetTransform() Matrix {
+	return s.Transform
 }

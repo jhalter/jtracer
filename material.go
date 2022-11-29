@@ -32,7 +32,7 @@ func (m Material) Lighting(object Shaper, light Light, point, eyev, normalv Tupl
 
 	var color Color
 	if m.HasPattern {
-		color = m.Pattern.ColorAtObject(object, point)
+		color = PatternAtShape(m.Pattern, object, point)
 	} else {
 		color = m.Color
 	}

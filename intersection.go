@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	"math"
 )
 
@@ -129,4 +130,33 @@ func (i Intersection) PrepareComputations(r Ray, xs Intersections) Computations 
 	comps.Reflectv = r.Direction.Reflect(comps.Normalv)
 
 	return comps
+}
+
+func Schlick(comps Computations) float64 {
+	// find the cosine of the angle between the eye and normal vectors
+	cos := comps.Eyev.Dot(&comps.Normalv)
+
+	// total internal reflection can only occur if n1 > n2
+	if comps.N1 > comps.N2 {
+		n := comps.N1 / comps.N2
+		sin2T := (n * n) * (1.0 - (cos * cos))
+		if sin2T > 1.0 {
+			return 1.0
+		}
+
+		// compute cosine of theta t using trig identity
+		cosT := math.Sqrt(1.0 - sin2T)
+
+		// when n1 > n2, use cos(theta t) instead
+		cos = cosT
+	}
+
+	temp := (comps.N1 - comps.N2) / (comps.N1 + comps.N2)
+	r0 := temp * temp
+	tmp2 := r0 + (1-r0)*math.Pow(1-cos, 5)
+	if math.IsNaN(tmp2) {
+		//return 0.0
+		spew.Dump(tmp2, comps)
+	}
+	return tmp2
 }

@@ -62,7 +62,7 @@ func (c Camera) RayForPixel(px, py float64) Ray {
 }
 
 const RendererCount = 8
-const MaxReflections = 5
+const MaxReflections = 8
 
 func (c Camera) Render(w World) Canvas {
 	image := NewCanvas(int(c.Hsize), int(c.Vsize))

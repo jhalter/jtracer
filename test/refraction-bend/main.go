@@ -257,7 +257,7 @@ func main() {
 		),
 	}
 
-	camera := jtracer.NewCamera(2400, 2400, 0.5)
+	camera := jtracer.NewCamera(200, 200, 0.5)
 	camera.Transform = jtracer.ViewTransform(
 		jtracer.NewPoint(-4.5, 0.85, -4),
 		jtracer.NewPoint(0, 0.85, 0),

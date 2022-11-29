@@ -198,8 +198,9 @@ func main() {
 			B:         jtracer.Color{0.55, 0.55, 0.55},
 			Transform: jtracer.RotationY(1.5708).Multiply(jtracer.Scaling(0.25, 0.25, 0.25)),
 		},
-		Diffuse:      0.4,
-		Reflectivity: 0.3,
+		Diffuse:         0.4,
+		Reflectivity:    0.3,
+		RefractiveIndex: 1.0,
 	}
 
 	// # the checkered floor
@@ -299,7 +300,7 @@ func main() {
 		Light:   jtracer.NewPointLight(*jtracer.NewPoint(-4.9, 4.9, -1), jtracer.Color{Red: 1, Green: 1, Blue: 1}),
 	}
 
-	camera := jtracer.NewCamera(4000, 2000, 1.152)
+	camera := jtracer.NewCamera(2000, 1000, 1.152)
 	camera.Transform = jtracer.ViewTransform(
 		jtracer.NewPoint(-2.6, 1.5, -3.9),
 		jtracer.NewPoint(-0.6, 1, -0.8),

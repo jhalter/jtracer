@@ -307,3 +307,98 @@ func TestIntersection_PrecomputingReflectionVector(t *testing.T) {
 		})
 	}
 }
+
+func TestSchlick(t *testing.T) {
+	glassSphere := NewGlassSphere()
+
+	type args struct {
+		comps Computations
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "the schlick approximation under total internal reflection",
+			args: args{
+				comps: func() Computations {
+					xs := Intersections{
+						{
+							T:      -(math.Sqrt(2) / 2),
+							Object: glassSphere,
+						},
+						{
+							T:      (math.Sqrt(2) / 2),
+							Object: glassSphere,
+						},
+					}
+
+					return xs[1].PrepareComputations(
+						NewRay(
+							*NewPoint(0, 0, math.Sqrt(2)/2),
+							*NewVector(0, 1, 0),
+						),
+						xs,
+					)
+				}(),
+			},
+			want: 1.0,
+		},
+		{
+			name: "the Schlick approximation with a perpendicular viewing angle",
+			args: args{
+				comps: func() Computations {
+					xs := Intersections{
+						{
+							T:      -1,
+							Object: glassSphere,
+						},
+						{
+							T:      1,
+							Object: glassSphere,
+						},
+					}
+
+					return xs[1].PrepareComputations(
+						NewRay(
+							*NewPoint(0, 0, 0),
+							*NewVector(0, 1, 0),
+						),
+						xs,
+					)
+				}(),
+			},
+			want: 0.04,
+		},
+		{
+			name: "the Schlick approximation with a small angle and n2 > n1",
+			args: args{
+				comps: func() Computations {
+					xs := Intersections{
+						{
+							T:      1.8589,
+							Object: glassSphere,
+						},
+					}
+					return xs[0].PrepareComputations(
+						NewRay(
+							*NewPoint(0, 0.99, -2),
+							*NewVector(0, 0, 1),
+						),
+						xs,
+					)
+				}(),
+			},
+			want: 0.48873,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Schlick(tt.args.comps); !cmp.Equal(tt.want, got, float64Comparer) {
+				t.Errorf("Schlick() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

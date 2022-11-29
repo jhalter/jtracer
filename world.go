@@ -76,6 +76,26 @@ func (w World) ShadeHit(comps Computations, remaining int) Color {
 	reflected := w.ReflectedColor(comps, remaining)
 	refracted := w.RefractedColor(comps, remaining)
 
+	material := comps.Object.GetMaterial()
+	if material.Reflectivity > 0.0 && material.Transparency > 0.0 {
+		reflectance := Schlick(comps)
+
+		// surface + reflected
+
+		//spew.Dump(reflectance)
+		//
+
+		//return surface + reflected * reflectance + refracted * (1 - reflectance)
+
+		m1 := reflected.MultiplyByScalar(reflectance)
+		m2 := refracted.MultiplyByScalar(1 - reflectance)
+
+		tmp1 := surface.Add(m1).Add(m2)
+		//spew.Dump(reflectance, reflected, refracted, tmp1)
+
+		return *tmp1
+	}
+
 	//
 	//spew.Dump(comps.Object.GetMaterial())
 	//spew.Dump(w.Light)
