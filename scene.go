@@ -3,15 +3,21 @@ package jtracer
 // A quick and dirty scene yaml parser
 
 import (
-	"fmt"
 	"gopkg.in/yaml.v3"
 	"os"
 )
 
+type SceneDescription struct {
+	Title       string
+	Description string
+	Author      string
+}
 type Scene struct {
-	Camera  Camera
-	Light   Light
-	Objects []Shaper
+	InputFile   string
+	Camera      Camera
+	Description SceneDescription
+	Light       Light
+	Objects     []Shaper
 }
 
 func LoadSceneFile(path string) (*Scene, error) {
@@ -27,6 +33,7 @@ func LoadSceneFile(path string) (*Scene, error) {
 	}
 
 	var scene Scene
+	scene.InputFile = path
 
 	defines := make(map[string]interface{})
 
@@ -35,10 +42,16 @@ func LoadSceneFile(path string) (*Scene, error) {
 		if k["define"] != nil {
 			defines[k["define"].(string)] = k["value"]
 		}
+
 	}
 
 	for _, k := range entries {
 		switch k["add"] {
+		case "description":
+			scene.Description = SceneDescription{
+				Description: k["description"].(string),
+				Title:       k["title"].(string),
+			}
 		case "camera":
 			scene.Camera = NewCamera(
 				float64(k["width"].(int)),
@@ -90,7 +103,8 @@ func LoadSceneFile(path string) (*Scene, error) {
 
 			scene.Objects = append(scene.Objects, s)
 		default:
-			fmt.Printf("unknown type %v\n", k["add"])
+			// TODO: error UI
+			//fmt.Fprintf(os.Stderr, "unknown type %v\n", k["add"])
 		}
 	}
 
@@ -189,9 +203,9 @@ func ParseTransforms(transforms []interface{}) Matrix {
 				Scaling(f[0], f[1], f[2]),
 			)
 		default:
-			fmt.Println("Unknown transform: " + transform[0].(string))
+			// TODO: error UI
+			//fmt.Fprintf(os.Stderr, "Unknown transform: "+transform[0].(string))
 		}
-
 	}
 
 	return result

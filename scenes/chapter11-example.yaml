@@ -1,6 +1,10 @@
+- add: description
+  title: "Chapter 11 Refraction and Reflection example"
+  description: "zzz"
+
 - add: camera
-  width: 2400
-  height: 1200
+  width: 4800
+  height: 2400
   field-of-view: 1.152
   from: [ -2.6, 1.5, -3.9 ]
   to: [ -0.6, 1, -0.8 ]

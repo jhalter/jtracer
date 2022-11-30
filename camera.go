@@ -1,7 +1,6 @@
 package jtracer
 
 import (
-	"fmt"
 	"math"
 	"sync"
 )
@@ -14,6 +13,7 @@ type Camera struct {
 	HalfWidth  float64
 	HalfHeight float64
 	PixelSize  float64
+	Progress   chan float64
 }
 
 func NewCamera(hsize, vsize, fov float64) Camera {
@@ -22,6 +22,7 @@ func NewCamera(hsize, vsize, fov float64) Camera {
 		Vsize:     vsize,
 		Fov:       fov,
 		Transform: IdentityMatrix,
+		Progress:  make(chan float64),
 	}
 
 	halfView := math.Tan(c.Fov / 2)
@@ -40,7 +41,7 @@ func NewCamera(hsize, vsize, fov float64) Camera {
 	return c
 }
 
-func (c Camera) RayForPixel(px, py float64) Ray {
+func (c *Camera) RayForPixel(px, py float64) Ray {
 	// the offset from the edge of the canvas to the pixel's center
 	xOffset := (px + 0.5) * c.PixelSize
 	yOffset := (py + 0.5) * c.PixelSize
@@ -63,7 +64,7 @@ func (c Camera) RayForPixel(px, py float64) Ray {
 const RendererCount = 8
 const MaxReflections = 5
 
-func (c Camera) Render(w World) Canvas {
+func (c *Camera) Render(w World) Canvas {
 	image := NewCanvas(int(c.Hsize), int(c.Vsize))
 
 	var wg sync.WaitGroup
@@ -77,9 +78,9 @@ func (c Camera) Render(w World) Canvas {
 		for {
 			<-yDone
 			yComplete++
-			//spew.Dump(yComplete)
-			if yComplete%100 == 0 {
-				fmt.Printf("%v percent complete\n", math.Round(float64(yComplete)/c.Vsize*100))
+
+			if yComplete%25 == 0 {
+				c.Progress <- float64(yComplete) / c.Vsize
 			}
 		}
 	}()
@@ -92,7 +93,6 @@ func (c Camera) Render(w World) Canvas {
 
 			go func() {
 				defer wg.Done()
-				fmt.Printf("%v to %v\n", yStart, yEnd)
 				for y := yStart; y <= yEnd; y++ {
 					yDone <- 1
 					for x := 0.0; x < c.Hsize; x++ {
