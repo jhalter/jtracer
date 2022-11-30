@@ -128,7 +128,7 @@ func tickCmd() tea.Cmd {
 func main() {
 	height := flag.Float64("height", -1, "Height of output image")
 	width := flag.Float64("width", -1, "Height of output image")
-	outputFile := flag.String("out", "out.png", "Filename of output image")
+	outputFile := flag.String("out", "refraction-and-reflection.png", "Filename of output image")
 
 	flag.Parse()
 
