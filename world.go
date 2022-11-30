@@ -17,28 +17,21 @@ func NewWorld() World {
 // DefaultWorld returns a World that contains two concentric spheres, where the outermost is a unit sphere and the
 // innermost has a radius of 0.5. Both lie at the origin.
 func DefaultWorld() World {
+	s1 := NewSphere()
+	s1.SetTransform(IdentityMatrix)
+	s1.Material = Material{
+		Color:           Color{0.8, 1.0, 0.6},
+		Ambient:         0.1,
+		Diffuse:         0.7,
+		Specular:        0.2,
+		Shininess:       200.0,
+		RefractiveIndex: 1.0,
+	}
+	s2 := NewSphere()
+	s2.SetTransform(Scaling(0.5, 0.5, 0.5))
+
 	return World{
-		Objects: []Shaper{
-			&Sphere{
-				Shape: Shape{
-					Transform: IdentityMatrix,
-					Material: Material{
-						Color:           Color{0.8, 1.0, 0.6},
-						Ambient:         0.1,
-						Diffuse:         0.7,
-						Specular:        0.2,
-						Shininess:       200.0,
-						RefractiveIndex: 1.0,
-					},
-				},
-			},
-			&Sphere{
-				Shape: Shape{
-					Transform: Scaling(0.5, 0.5, 0.5),
-					Material:  NewMaterial(),
-				},
-			},
-		},
+		Objects: []Shaper{s1, s2},
 		Light: NewPointLight(
 			*NewPoint(-10, 10, -10),
 			Color{1, 1, 1},

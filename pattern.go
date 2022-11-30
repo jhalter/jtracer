@@ -50,8 +50,16 @@ func PatternAtShape(patterny Patterny, shape Shaper, worldPoint Tuple) Color {
 	return patterny.ColorAt(patternPoint)
 }
 
-func NewTestPattern() TestPattern {
-	return TestPattern{Transform: IdentityMatrix}
+func NewTestPattern() *TestPattern {
+	p := &TestPattern{Transform: IdentityMatrix}
+	p.SetTransform(IdentityMatrix)
+	return p
+}
+
+func NewTestPatternWithTransform(t Matrix) *TestPattern {
+	p := &TestPattern{Transform: IdentityMatrix}
+	p.SetTransform(t)
+	return p
 }
 
 type TestPattern struct {
@@ -63,10 +71,10 @@ func (p *TestPattern) ColorAt(point Tuple) Color {
 	return Color{point.X, point.Y, point.Z}
 }
 
-func NewStripePattern(a Color, b Color) StripePattern {
+func NewStripePattern(a Color, b Color) *StripePattern {
 	p := StripePattern{A: a, B: b}
 	p.SetTransform(IdentityMatrix)
-	return p
+	return &p
 }
 
 func (s *StripePattern) ColorAt(p Tuple) Color {

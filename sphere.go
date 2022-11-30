@@ -6,31 +6,39 @@ import (
 )
 
 type Sphere struct {
-	ID int
 	Shape
 }
 
 func NewSphere() *Sphere {
-	return &Sphere{
+	s := &Sphere{
 		Shape: Shape{
-			ID:        rand.Int(),
-			Transform: IdentityMatrix,
-			Material:  NewMaterial(),
+			ID:       rand.Int(),
+			Material: NewMaterial(),
 		},
 	}
+	s.SetTransform(IdentityMatrix)
+	return s
 }
 
-func NewGlassSphere() Sphere {
-	return Sphere{
+// NewSphereWithID returns a Sphere with a specific ID for use in test assertions
+func NewSphereWithID(id int) *Sphere {
+	s := NewSphere()
+	s.Shape.ID = id
+	return s
+}
+
+func NewGlassSphere() *Sphere {
+	s := &Sphere{
 		Shape: Shape{
-			ID:        rand.Int(),
-			Transform: IdentityMatrix,
+			ID: rand.Int(),
 			Material: Material{
 				Transparency:    1.0,
 				RefractiveIndex: 1.5,
 			},
 		},
 	}
+	s.SetTransform(IdentityMatrix)
+	return s
 }
 
 func (s *Sphere) GetMaterial() Material {
@@ -61,16 +69,11 @@ func (s *Sphere) LocalIntersect(ray Ray) Intersections {
 }
 
 func (s *Sphere) LocalNormalAt(point Tuple) Tuple {
-	objectNormal := point.Subtract(NewPoint(0, 0, 0))
-
-	return *objectNormal
+	return *point.Subtract(NewPoint(0, 0, 0))
 }
 
 func Intersects(s Shaper, r Ray) Intersections {
-	//localRay := r.Transform(s.GetTransform().Inverse())
-	localRay := r.Transform(s.GetInverse())
-
-	return s.LocalIntersect(localRay)
+	return s.LocalIntersect(r.Transform(s.GetInverse()))
 }
 
 func NormalAt(s Shaper, worldPoint Tuple) Tuple {

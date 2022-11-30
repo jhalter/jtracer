@@ -18,38 +18,38 @@ func TestIntersections_Hit(t *testing.T) {
 			name: "the hit, when all intersections have positive t",
 			i: Intersections{
 				{
-					T: 1, Object: NewSphere(),
+					T: 1, Object: NewSphereWithID(1),
 				},
 				{
-					T: 2, Object: Sphere{ID: 1},
+					T: 2, Object: NewSphereWithID(1),
 				},
 			},
 			want: &Intersection{
-				T: 1, Object: Sphere{ID: 1},
+				T: 1, Object: NewSphereWithID(1),
 			},
 		},
 		{
 			name: "the hit, when some intersections have negative t",
 			i: Intersections{
 				{
-					T: -1, Object: Sphere{ID: 1},
+					T: -1, Object: NewSphereWithID(1),
 				},
 				{
-					T: 2, Object: Sphere{ID: 1},
+					T: 2, Object: NewSphereWithID(1),
 				},
 			},
 			want: &Intersection{
-				T: 2, Object: Sphere{ID: 1},
+				T: 2, Object: NewSphereWithID(1),
 			},
 		},
 		{
 			name: "the hit, when all intersections have negative t",
 			i: Intersections{
 				{
-					T: -2, Object: Sphere{ID: 1},
+					T: -2, Object: NewSphereWithID(1),
 				},
 				{
-					T: -1, Object: Sphere{ID: 1},
+					T: -1, Object: NewSphereWithID(1),
 				},
 			},
 			want: nil,
@@ -58,20 +58,20 @@ func TestIntersections_Hit(t *testing.T) {
 			name: "the hit is always the lowest non-negative intersection",
 			i: Intersections{
 				{
-					T: 5, Object: Sphere{ID: 1},
+					T: 5, Object: NewSphereWithID(1),
 				},
 				{
-					T: 7, Object: Sphere{ID: 1},
+					T: 7, Object: NewSphereWithID(1),
 				},
 				{
-					T: -3, Object: Sphere{ID: 1},
+					T: -3, Object: NewSphereWithID(1),
 				},
 				{
-					T: 2, Object: Sphere{ID: 1},
+					T: 2, Object: NewSphereWithID(1),
 				},
 			},
 			want: &Intersection{
-				T: 2, Object: Sphere{ID: 1},
+				T: 2, Object: NewSphereWithID(1),
 			},
 		},
 	}
@@ -152,10 +152,8 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 		{
 			name: "precomputing the reflection vector",
 			fields: fields{
-				T: math.Sqrt(2),
-				Object: Plane{
-					Shape: Shape{Transform: IdentityMatrix},
-				},
+				T:      math.Sqrt(2),
+				Object: NewPlaneWithID(1),
 			},
 			args: args{
 				r: Ray{
@@ -164,10 +162,8 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 				},
 			},
 			want: Computations{
-				T: 1.4142135623730951,
-				Object: Plane{
-					Shape: Shape{Transform: IdentityMatrix},
-				},
+				T:          1.4142135623730951,
+				Object:     NewPlaneWithID(1),
 				Point:      *NewPoint(0, 0, 0),
 				Eyev:       *NewVector(0, 0.7071067811865476, -0.7071067811865476),
 				Normalv:    *NewVector(0, 1, 0),
@@ -196,17 +192,17 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 func TestIntersection_FindingN1AndN2(t *testing.T) {
 	a := NewGlassSphere()
 	a.Shape.ID = 1
-	a.Transform = Scaling(2, 2, 2)
+	a.SetTransform(Scaling(2, 2, 2))
 	a.Material.RefractiveIndex = 1.5
 
 	b := NewGlassSphere()
 	b.Shape.ID = 2
-	b.Transform = NewTranslation(0, 0, -0.25)
+	b.SetTransform(NewTranslation(0, 0, -0.25))
 	b.Material.RefractiveIndex = 2.0
 
 	c := NewGlassSphere()
 	c.Shape.ID = 3
-	c.Transform = NewTranslation(0, 0, 0.25)
+	c.SetTransform(NewTranslation(0, 0, 0.25))
 	c.Material.RefractiveIndex = 2.5
 
 	r := NewRay(
@@ -329,7 +325,7 @@ func TestSchlick(t *testing.T) {
 							Object: glassSphere,
 						},
 						{
-							T:      (math.Sqrt(2) / 2),
+							T:      math.Sqrt(2) / 2,
 							Object: glassSphere,
 						},
 					}

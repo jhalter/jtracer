@@ -45,7 +45,6 @@ func TestPlane_NormalAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := Plane{
-				ID:    tt.fields.ID,
 				Shape: tt.fields.Shape,
 			}
 			if got := p.LocalNormalAt(tt.args.in0); !reflect.DeepEqual(got, tt.want) {
@@ -98,8 +97,9 @@ func TestPlane_Intersects(t *testing.T) {
 		{
 			name: "a ray intersecting a plane from above",
 			fields: fields{
-				ID:    1,
-				Shape: Shape{},
+				Shape: Shape{
+					ID: 1,
+				},
 			},
 			args: args{
 				Ray{
@@ -110,7 +110,7 @@ func TestPlane_Intersects(t *testing.T) {
 			want: Intersections{
 				{
 					T:      1,
-					Object: Plane{ID: 1},
+					Object: NewPlaneWithID(1),
 				},
 			},
 		},
@@ -118,7 +118,7 @@ func TestPlane_Intersects(t *testing.T) {
 			name: "a ray intersecting a plane from below",
 			fields: fields{
 				ID:    1,
-				Shape: Shape{},
+				Shape: Shape{ID: 1},
 			},
 			args: args{
 				Ray{
@@ -129,17 +129,14 @@ func TestPlane_Intersects(t *testing.T) {
 			want: Intersections{
 				{
 					T:      1,
-					Object: Plane{ID: 1},
+					Object: NewPlaneWithID(1),
 				},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := Plane{
-				ID:    tt.fields.ID,
-				Shape: tt.fields.Shape,
-			}
+			p := NewPlaneWithID(1)
 			if got := p.LocalIntersect(tt.args.r); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Intersects() = %v, want %v", got, tt.want)
 			}

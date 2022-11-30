@@ -141,7 +141,7 @@ func ParseMaterial(m Material, cfg map[string]interface{}) Material {
 					p.SetTransform(tf)
 				}
 				m.HasPattern = true
-				m.Pattern = &p
+				m.Pattern = p
 
 			case "checkers":
 				colors := pDef["colors"].([]interface{})

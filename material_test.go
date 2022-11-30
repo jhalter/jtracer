@@ -18,7 +18,7 @@ func TestMaterial_Lighting(t *testing.T) {
 		Reflectivity float64
 	}
 	type args struct {
-		object   Sphere
+		object   *Sphere
 		light    Light
 		point    Tuple
 		eyev     Tuple
@@ -41,7 +41,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Shininess: 200.0,
 			},
 			args: args{
-				object: Sphere{},
+				object: NewSphere(),
 				light: Light{
 					Position:  *NewPoint(0, 0, -10),
 					Intensity: Color{1, 1, 1},
@@ -63,7 +63,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Shininess: 200.0,
 			},
 			args: args{
-				object: Sphere{},
+				object: NewSphere(),
 				light: Light{
 					Position:  *NewPoint(0, 0, -10),
 					Intensity: Color{1, 1, 1},
@@ -85,7 +85,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Shininess: 200.0,
 			},
 			args: args{
-				object: Sphere{},
+				object: NewSphere(),
 				light: Light{
 					Position:  *NewPoint(0, 10, -10),
 					Intensity: Color{1, 1, 1},
@@ -107,7 +107,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Shininess: 200.0,
 			},
 			args: args{
-				object: Sphere{},
+				object: NewSphere(),
 				light: Light{
 					Position:  *NewPoint(0, 10, -10),
 					Intensity: Color{1, 1, 1},
@@ -129,7 +129,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Shininess: 200.0,
 			},
 			args: args{
-				object: Sphere{},
+				object: NewSphere(),
 				light: Light{
 					Position:  *NewPoint(0, 0, -10),
 					Intensity: Color{1, 1, 1},
@@ -148,11 +148,11 @@ func TestMaterial_Lighting(t *testing.T) {
 				Ambient:   1,
 				Diffuse:   0,
 				Specular:  0,
-				Pattern:   StripePattern{A: White, B: Black, Transform: IdentityMatrix},
+				Pattern:   NewStripePattern(White, Black),
 				Shininess: 200.0,
 			},
 			args: args{
-				object: Sphere{},
+				object: NewSphere(),
 				light: Light{
 					Position:  *NewPoint(0, 0, -10),
 					Intensity: White,
@@ -172,7 +172,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Diffuse:    0,
 				Specular:   0,
 				HasPattern: true,
-				Pattern:    StripePattern{A: White, B: Black, Transform: IdentityMatrix},
+				Pattern:    NewStripePattern(White, Black),
 				Shininess:  200.0,
 			},
 			args: args{
@@ -196,7 +196,7 @@ func TestMaterial_Lighting(t *testing.T) {
 				Diffuse:    0,
 				Specular:   0,
 				HasPattern: true,
-				Pattern:    StripePattern{A: White, B: Black, Transform: IdentityMatrix},
+				Pattern:    NewStripePattern(White, Black),
 				Shininess:  200.0,
 			},
 			args: args{

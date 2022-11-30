@@ -79,7 +79,7 @@ func (c Camera) Render(w World) Canvas {
 			yComplete++
 			//spew.Dump(yComplete)
 			if yComplete%100 == 0 {
-				fmt.Printf("%v", float64(yComplete)/c.Vsize)
+				fmt.Printf("%v percent complete\n", math.Round(float64(yComplete)/c.Vsize*100))
 			}
 		}
 	}()
@@ -99,10 +99,8 @@ func (c Camera) Render(w World) Canvas {
 						r := c.RayForPixel(x, y)
 						color := w.ColorAt(r, MaxReflections)
 						image.WritePixel(int(x), int(y), &color)
-						//messages <- Pixel{int(x), int(y), color}
 					}
 				}
-				//fmt.Printf("RENDERER DONE\n")
 			}()
 		}
 

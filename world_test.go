@@ -66,6 +66,10 @@ func TestWorld_Intersect(t *testing.T) {
 }
 
 func TestWorld_ShadeHit(t *testing.T) {
+
+	s1 := NewSphereWithID(1)
+	s1.SetTransform(NewTranslation(0, 0, 10))
+
 	type fields struct {
 		Objects []Shaper
 		Light   Light
@@ -107,26 +111,16 @@ func TestWorld_ShadeHit(t *testing.T) {
 			name: "ShadeHit() is given an intersection in shadow",
 			fields: fields{
 				Objects: []Shaper{
-					NewSphere(),
-					Sphere{
-						Shape: Shape{
-							Transform: NewTranslation(0, 0, 10),
-							Material:  NewMaterial(),
-						},
-					},
+					NewSphereWithID(2),
+					s1,
 				},
 				Light: NewPointLight(*NewPoint(0, 0, -10), White),
 			},
 			args: args{
 				comps: func() Computations {
 					i := Intersection{
-						T: 4,
-						Object: Sphere{
-							Shape: Shape{
-								Transform: NewTranslation(0, 0, 10),
-								Material:  NewMaterial(),
-							},
-						},
+						T:      4,
+						Object: s1,
 					}
 					return i.PrepareComputations(Ray{
 						Origin:    *NewPoint(0, 0, 5),
@@ -145,25 +139,15 @@ func TestWorld_ShadeHit(t *testing.T) {
 			fields: fields{
 				Objects: []Shaper{
 					NewSphere(),
-					Sphere{
-						Shape: Shape{
-							Transform: NewTranslation(0, 0, 10),
-							Material:  NewMaterial(),
-						},
-					},
+					s1,
 				},
 				Light: NewPointLight(*NewPoint(0, 0, -10), White),
 			},
 			args: args{
 				comps: func() Computations {
 					i := Intersection{
-						T: 4,
-						Object: Sphere{
-							Shape: Shape{
-								Transform: NewTranslation(0, 0, 10),
-								Material:  NewMaterial(),
-							},
-						},
+						T:      4,
+						Object: s1,
 					}
 					return i.PrepareComputations(Ray{
 						Origin:    *NewPoint(0, 0, 5),
@@ -260,12 +244,10 @@ func TestWorld_ReflectedColor(t *testing.T) {
 	defaultWorldWithReflectivePlane := dw
 	m := NewMaterial()
 	m.Reflectivity = 0.5
-	defaultWorldWithReflectivePlane.Objects = append(dw.Objects, Plane{
-		Shape: Shape{
-			Transform: NewTranslation(0, -1, 0),
-			Material:  m,
-		},
-	})
+	p := NewPlane()
+	p.SetTransform(NewTranslation(0, -1, 0))
+	p.Material = m
+	defaultWorldWithReflectivePlane.Objects = append(dw.Objects, p)
 
 	type fields struct {
 		Objects []Shaper
@@ -286,7 +268,7 @@ func TestWorld_ReflectedColor(t *testing.T) {
 			fields: fields(dw),
 			args: args{
 				comps: func() Computations {
-					shape := dw.Objects[1].(Sphere)
+					shape := dw.Objects[1].(*Sphere)
 					shape.Material.Ambient = 1
 
 					i := Intersection{T: 1, Object: shape}

@@ -6,18 +6,24 @@ import (
 )
 
 type Plane struct {
-	ID int
 	Shape
 }
 
 func NewPlane() *Plane {
-	return &Plane{
+	p := &Plane{
 		Shape: Shape{
-			ID:        rand.Int(),
-			Transform: IdentityMatrix,
-			Material:  NewMaterial(),
+			ID:       rand.Int(),
+			Material: NewMaterial(),
 		},
 	}
+	p.SetTransform(IdentityMatrix)
+	return p
+}
+
+func NewPlaneWithID(id int) *Plane {
+	p := NewPlane()
+	p.Shape.ID = id
+	return p
 }
 
 func (p *Plane) LocalNormalAt(_ Tuple) Tuple {

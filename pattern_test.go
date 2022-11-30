@@ -21,7 +21,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 		want   Color
 	}{
 		{
-			name: "A strip pattern is constant in y",
+			name: "A stripe pattern is constant in y",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -31,7 +31,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern is constant in y",
+			name: "A stripe pattern is constant in y",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -41,7 +41,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern is constant in y",
+			name: "A stripe pattern is constant in y",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -51,7 +51,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern is constant in z",
+			name: "A stripe pattern is constant in z",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -61,7 +61,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern is constant in z",
+			name: "A stripe pattern is constant in z",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -71,7 +71,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern is constant in z",
+			name: "A stripe pattern is constant in z",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -81,7 +81,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern alternates in x",
+			name: "A stripe pattern alternates in x",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -91,7 +91,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern alternates in x",
+			name: "A stripe pattern alternates in x",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -101,7 +101,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: White,
 		},
 		{
-			name: "A strip pattern alternates in x",
+			name: "A stripe pattern alternates in x",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -111,7 +111,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: Black,
 		},
 		{
-			name: "A strip pattern alternates in x",
+			name: "A stripe pattern alternates in x",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -121,7 +121,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: Black,
 		},
 		{
-			name: "A strip pattern alternates in x",
+			name: "A stripe pattern alternates in x",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -131,7 +131,7 @@ func TestStripePattern_ColorAt(t *testing.T) {
 			want: Black,
 		},
 		{
-			name: "A strip pattern alternates in x",
+			name: "A stripe pattern alternates in x",
 			fields: fields{
 				A:         White,
 				B:         Black,
@@ -144,10 +144,10 @@ func TestStripePattern_ColorAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := StripePattern{
-				A:         tt.fields.A,
-				B:         tt.fields.B,
-				Transform: tt.fields.Transform,
+				A: tt.fields.A,
+				B: tt.fields.B,
 			}
+			s.SetTransform(tt.fields.Transform)
 			if got := s.ColorAt(tt.args.p); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ColorAt() = %v, want %v", got, tt.want)
 			}
@@ -270,10 +270,10 @@ func TestCheckersPattern_ColorAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := CheckersPattern{
-				A:         tt.fields.A,
-				B:         tt.fields.B,
-				Transform: tt.fields.Transform,
+				A: tt.fields.A,
+				B: tt.fields.B,
 			}
+			s.SetTransform(tt.fields.Transform)
 			if got := s.ColorAt(tt.args.p); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ColorAt() = %v, want %v", got, tt.want)
 			}
@@ -296,9 +296,9 @@ func TestPatternAtShape(t *testing.T) {
 			name: "A pattern with an object transformation",
 			args: args{
 				patterny: NewTestPattern(),
-				shape: func() Sphere {
+				shape: func() *Sphere {
 					s := NewSphere()
-					s.Transform = Scaling(2, 2, 2)
+					s.SetTransform(Scaling(2, 2, 2))
 					s.Material.Pattern = NewTestPattern()
 					return s
 				}(),
@@ -309,10 +309,10 @@ func TestPatternAtShape(t *testing.T) {
 		{
 			name: "A pattern with a pattern transformation",
 			args: args{
-				patterny: TestPattern{Transform: Scaling(2, 2, 2)},
-				shape: func() Sphere {
+				patterny: NewTestPatternWithTransform(Scaling(2, 2, 2)),
+				shape: func() *Sphere {
 					s := NewSphere()
-					s.Material.Pattern = TestPattern{Transform: Scaling(2, 2, 2)}
+					s.Material.Pattern = NewTestPatternWithTransform(Scaling(2, 2, 2))
 					return s
 				}(),
 				worldPoint: Tuple{2, 3, 4, 1},
@@ -322,11 +322,11 @@ func TestPatternAtShape(t *testing.T) {
 		{
 			name: "A pattern with both an object and pattern transformation",
 			args: args{
-				patterny: TestPattern{Transform: NewTranslation(0.5, 1, 1.5)},
-				shape: func() Sphere {
+				patterny: NewTestPatternWithTransform(NewTranslation(0.5, 1, 1.5)),
+				shape: func() *Sphere {
 					s := NewSphere()
-					s.Transform = Scaling(2, 2, 2)
-					s.Material.Pattern = TestPattern{Transform: NewTranslation(0.5, 1, 1.5)}
+					s.SetTransform(Scaling(2, 2, 2))
+					s.Material.Pattern = NewTestPatternWithTransform(NewTranslation(0.5, 1, 1.5))
 					return s
 				}(),
 				worldPoint: Tuple{2.5, 3, 3.5, 1},
