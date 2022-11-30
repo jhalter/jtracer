@@ -64,7 +64,9 @@ func (p *TestPattern) ColorAt(point Tuple) Color {
 }
 
 func NewStripePattern(a Color, b Color) StripePattern {
-	return StripePattern{A: a, B: b, AbstractPattern: AbstractPattern{Transform: IdentityMatrix}}
+	p := StripePattern{A: a, B: b}
+	p.SetTransform(IdentityMatrix)
+	return p
 }
 
 func (s *StripePattern) ColorAt(p Tuple) Color {
@@ -82,7 +84,9 @@ type CheckersPattern struct {
 }
 
 func NewCheckersPattern(a Color, b Color) CheckersPattern {
-	return CheckersPattern{A: a, B: b, AbstractPattern: AbstractPattern{Transform: IdentityMatrix}}
+	p := CheckersPattern{A: a, B: b}
+	p.SetTransform(IdentityMatrix)
+	return p
 }
 
 func (s *CheckersPattern) ColorAt(p Tuple) Color {

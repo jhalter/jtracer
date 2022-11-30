@@ -1,0 +1,111 @@
+{
+  "Objects": [
+    {
+      "ID": 0,
+      "Material": {
+        "Color": {
+          "Red": 0.8,
+          "Green": 1,
+          "Blue": 0.6
+        },
+        "Ambient": 0.1,
+        "Diffuse": 0.7,
+        "Specular": 0.2,
+        "Shininess": 200,
+        "Pattern": null,
+        "HasPattern": false,
+        "Reflectivity": 0,
+        "Transparency": 0,
+        "RefractiveIndex": 1
+      },
+      "Transform": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "Inverse": null,
+      "InverseTranspose": null
+    },
+    {
+      "ID": 0,
+      "Material": {
+        "Color": {
+          "Red": 1,
+          "Green": 1,
+          "Blue": 1
+        },
+        "Ambient": 0.1,
+        "Diffuse": 0.9,
+        "Specular": 0.9,
+        "Shininess": 200,
+        "Pattern": null,
+        "HasPattern": false,
+        "Reflectivity": 0,
+        "Transparency": 0,
+        "RefractiveIndex": 1
+      },
+      "Transform": [
+        [
+          0.5,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0.5,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.5,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "Inverse": null,
+      "InverseTranspose": null
+    }
+  ],
+  "Light": {
+    "Position": {
+      "X": -10,
+      "Y": 10,
+      "Z": -10,
+      "W": 1
+    },
+    "Intensity": {
+      "Red": 1,
+      "Green": 1,
+      "Blue": 1
+    }
+  }
+}
