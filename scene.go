@@ -20,8 +20,8 @@ func LoadSceneFile(path string) (*Scene, error) {
 		panic(err)
 	}
 
-	var test []map[string]interface{}
-	err = yaml.Unmarshal(yamlFile, &test)
+	var entries []map[string]interface{}
+	err = yaml.Unmarshal(yamlFile, &entries)
 	if err != nil {
 		return nil, err
 	}
@@ -31,13 +31,13 @@ func LoadSceneFile(path string) (*Scene, error) {
 	defines := make(map[string]interface{})
 
 	// first look for defines
-	for _, k := range test {
+	for _, k := range entries {
 		if k["define"] != nil {
 			defines[k["define"].(string)] = k["value"]
 		}
 	}
 
-	for _, k := range test {
+	for _, k := range entries {
 		switch k["add"] {
 		case "camera":
 			scene.Camera = NewCamera(
