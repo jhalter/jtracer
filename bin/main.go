@@ -137,7 +137,7 @@ func (m *model) progressDialog() string {
 		lipgloss.NewStyle().
 			Width(m.termWidth).
 			Align(lipgloss.Left).
-			Render(fmt.Sprintf(template, m.scene.InputFile, m.outputFile, m.scene.Camera.Vsize, m.scene.Camera.Hsize)),
+			Render(fmt.Sprintf(template, m.scene.InputFile, m.outputFile, m.scene.Camera.Hsize, m.scene.Camera.Vsize)),
 	)
 
 	paddedProgress := m.progress.ViewAs(m.percent) + "\n"
