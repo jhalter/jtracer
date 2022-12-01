@@ -7,7 +7,7 @@ import (
 
 type Intersection struct {
 	T      float64
-	Object Shaper
+	Object Shape
 }
 
 type Intersections []Intersection
@@ -41,7 +41,7 @@ func (i Intersections) Hit() *Intersection {
 
 type Computations struct {
 	T          float64
-	Object     Shaper
+	Object     Shape
 	Point      Tuple
 	Eyev       Tuple
 	Normalv    Tuple
@@ -53,9 +53,9 @@ type Computations struct {
 	N2         float64 // n2 is the refractive index belonging to the material being entered
 }
 
-type container []Shaper
+type container []Shape
 
-func (c container) contains(shape Shaper) bool {
+func (c container) contains(shape Shape) bool {
 	for _, i := range c {
 		if i.GetID() == shape.GetID() {
 			return true
@@ -64,7 +64,7 @@ func (c container) contains(shape Shaper) bool {
 	return false
 }
 
-func (c container) remove(shape Shaper) container {
+func (c container) remove(shape Shape) container {
 	newContainer := container{}
 
 	for _, i := range c {

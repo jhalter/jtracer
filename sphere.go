@@ -6,12 +6,12 @@ import (
 )
 
 type Sphere struct {
-	Shape
+	AbstractShape
 }
 
 func NewSphere() *Sphere {
 	s := &Sphere{
-		Shape: Shape{
+		AbstractShape: AbstractShape{
 			ID:       rand.Int(),
 			Material: NewMaterial(),
 		},
@@ -23,13 +23,13 @@ func NewSphere() *Sphere {
 // NewSphereWithID returns a Sphere with a specific ID for use in test assertions
 func NewSphereWithID(id int) *Sphere {
 	s := NewSphere()
-	s.Shape.ID = id
+	s.AbstractShape.ID = id
 	return s
 }
 
 func NewGlassSphere() *Sphere {
 	s := &Sphere{
-		Shape: Shape{
+		AbstractShape: AbstractShape{
 			ID: rand.Int(),
 			Material: Material{
 				Transparency:    1.0,
@@ -72,11 +72,11 @@ func (s *Sphere) LocalNormalAt(point Tuple) Tuple {
 	return *point.Subtract(NewPoint(0, 0, 0))
 }
 
-func Intersects(s Shaper, r Ray) Intersections {
+func Intersects(s Shape, r Ray) Intersections {
 	return s.LocalIntersect(r.Transform(s.GetInverse()))
 }
 
-func NormalAt(s Shaper, worldPoint Tuple) Tuple {
+func NormalAt(s Shape, worldPoint Tuple) Tuple {
 	localPoint := s.GetInverse().MultiplyByTuple(worldPoint)
 	objectNormal := s.LocalNormalAt(localPoint)
 	worldNormal := s.GetInverseTranspose().MultiplyByTuple(objectNormal)

@@ -4,10 +4,9 @@ import (
 	"math"
 )
 
-type Patterny interface {
+type Pattern interface {
 	ColorAt(Tuple) Color
 	GetTransform() Matrix
-
 	SetTransform(Matrix)
 	GetInverse() Matrix
 	GetInverseTranspose() Matrix
@@ -43,7 +42,7 @@ type StripePattern struct {
 	AbstractPattern
 }
 
-func PatternAtShape(patterny Patterny, shape Shaper, worldPoint Tuple) Color {
+func PatternAtShape(patterny Pattern, shape Shape, worldPoint Tuple) Color {
 	objectPoint := shape.GetInverse().MultiplyByTuple(worldPoint)
 	patternPoint := patterny.GetInverse().MultiplyByTuple(objectPoint)
 

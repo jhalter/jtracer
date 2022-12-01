@@ -11,7 +11,7 @@ var dw = DefaultWorld()
 func TestWorld_Intersect(t *testing.T) {
 
 	type fields struct {
-		Objects []Shaper
+		Objects []Shape
 		Light   Light
 	}
 	type args struct {
@@ -71,7 +71,7 @@ func TestWorld_ShadeHit(t *testing.T) {
 	s1.SetTransform(NewTranslation(0, 0, 10))
 
 	type fields struct {
-		Objects []Shaper
+		Objects []Shape
 		Light   Light
 	}
 	type args struct {
@@ -110,7 +110,7 @@ func TestWorld_ShadeHit(t *testing.T) {
 		{
 			name: "ShadeHit() is given an intersection in shadow",
 			fields: fields{
-				Objects: []Shaper{
+				Objects: []Shape{
 					NewSphereWithID(2),
 					s1,
 				},
@@ -137,7 +137,7 @@ func TestWorld_ShadeHit(t *testing.T) {
 		{
 			name: "ShadeHit() with a reflective material",
 			fields: fields{
-				Objects: []Shaper{
+				Objects: []Shape{
 					NewSphere(),
 					s1,
 				},
@@ -177,7 +177,7 @@ func TestWorld_ShadeHit(t *testing.T) {
 
 func TestWorld_IsShadowed(t *testing.T) {
 	type fields struct {
-		Objects []Shaper
+		Objects []Shape
 		Light   Light
 	}
 	type args struct {
@@ -250,7 +250,7 @@ func TestWorld_ReflectedColor(t *testing.T) {
 	defaultWorldWithReflectivePlane.Objects = append(dw.Objects, p)
 
 	type fields struct {
-		Objects []Shaper
+		Objects []Shape
 		Light   Light
 	}
 	type args struct {
@@ -339,7 +339,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 	glassySphere.Material = m1
 
 	//s1 := Sphere{
-	//	Shape: Shape{
+	//	AbstractShape: AbstractShape{
 	//		Transform: IdentityMatrix,
 	//		Material: Material{
 	//			Color:           White,
@@ -354,7 +354,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 	//	},
 	//}
 	//s2 := Sphere{
-	//	Shape: Shape{
+	//	AbstractShape: AbstractShape{
 	//		Transform: Scaling(0.5, 0.5, 0.5),
 	//		Material: Material{
 	//			Color:           White,
@@ -369,7 +369,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 	//}
 
 	type fields struct {
-		Objects []Shaper
+		Objects []Shape
 		Light   Light
 	}
 	type args struct {
@@ -413,7 +413,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 			name: "the refracted color at maximum recursive depth",
 			fields: fields{
 				Light: dw.Light,
-				Objects: func() []Shaper {
+				Objects: func() []Shape {
 					s1 := NewSphere()
 					m1 := NewMaterial()
 					m1.Color = Color{0.8, 1.0, 0.6}
@@ -426,7 +426,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 					s2 := NewSphere()
 					s2.Transform = Scaling(0.5, 0.5, 0.5)
 
-					return []Shaper{s1, s2}
+					return []Shape{s1, s2}
 				}(),
 			},
 			args: args{
@@ -434,7 +434,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 					xs := Intersections{
 						{
 							T: 4,
-							Object: func() Shaper {
+							Object: func() Shape {
 								s1 := NewSphere()
 								m1 := NewMaterial()
 								m1.Color = Color{0.8, 1.0, 0.6}
@@ -468,14 +468,14 @@ func TestWorld_RefractedColor(t *testing.T) {
 			name: "the refracted color under total internal reflection",
 			fields: fields{
 				Light: dw.Light,
-				Objects: func() []Shaper {
+				Objects: func() []Shape {
 					s1 := NewSphere()
 					s1.Material = m1
 
 					s2 := NewSphere()
 					s2.Transform = Scaling(0.5, 0.5, 0.5)
 
-					return []Shaper{s1, s2}
+					return []Shape{s1, s2}
 				}(),
 			},
 			args: args{
@@ -506,7 +506,7 @@ func TestWorld_RefractedColor(t *testing.T) {
 		//	name: "the refracted color with a refracted ray",
 		//	fields: fields{
 		//		Light:   dw.Light,
-		//		Objects: []Shaper{s1, s2},
+		//		Objects: []Shape{s1, s2},
 		//	},
 		//	args: args{
 		//		comps: func() Computations {

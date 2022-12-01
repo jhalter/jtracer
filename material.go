@@ -10,7 +10,7 @@ type Material struct {
 	Diffuse         float64
 	Specular        float64
 	Shininess       float64
-	Pattern         Patterny
+	Pattern         Pattern
 	HasPattern      bool
 	Reflectivity    float64
 	Transparency    float64
@@ -28,7 +28,7 @@ func NewMaterial() Material {
 	}
 }
 
-func (m Material) Lighting(object Shaper, light Light, point, eyev, normalv Tuple, inShadow bool) Color {
+func (m Material) Lighting(object Shape, light Light, point, eyev, normalv Tuple, inShadow bool) Color {
 
 	var color Color
 	if m.HasPattern {

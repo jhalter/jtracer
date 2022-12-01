@@ -13,7 +13,7 @@ func TestMaterial_Lighting(t *testing.T) {
 		Diffuse      float64
 		Specular     float64
 		Shininess    float64
-		Pattern      Patterny
+		Pattern      Pattern
 		HasPattern   bool
 		Reflectivity float64
 	}

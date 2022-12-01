@@ -6,12 +6,12 @@ import (
 )
 
 type Plane struct {
-	Shape
+	AbstractShape
 }
 
 func NewPlane() *Plane {
 	p := &Plane{
-		Shape: Shape{
+		AbstractShape: AbstractShape{
 			ID:       rand.Int(),
 			Material: NewMaterial(),
 		},
@@ -22,7 +22,7 @@ func NewPlane() *Plane {
 
 func NewPlaneWithID(id int) *Plane {
 	p := NewPlane()
-	p.Shape.ID = id
+	p.AbstractShape.ID = id
 	return p
 }
 

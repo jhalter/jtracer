@@ -89,7 +89,7 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 	s := NewSphere()
 	type fields struct {
 		T      float64
-		Object Shaper
+		Object Shape
 	}
 	type args struct {
 		r Ray
@@ -191,17 +191,17 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 
 func TestIntersection_FindingN1AndN2(t *testing.T) {
 	a := NewGlassSphere()
-	a.Shape.ID = 1
+	a.AbstractShape.ID = 1
 	a.SetTransform(Scaling(2, 2, 2))
 	a.Material.RefractiveIndex = 1.5
 
 	b := NewGlassSphere()
-	b.Shape.ID = 2
+	b.AbstractShape.ID = 2
 	b.SetTransform(NewTranslation(0, 0, -0.25))
 	b.Material.RefractiveIndex = 2.0
 
 	c := NewGlassSphere()
-	c.Shape.ID = 3
+	c.AbstractShape.ID = 3
 	c.SetTransform(NewTranslation(0, 0, 0.25))
 	c.Material.RefractiveIndex = 2.5
 
@@ -265,7 +265,7 @@ func TestIntersection_FindingN1AndN2(t *testing.T) {
 func TestIntersection_PrecomputingReflectionVector(t *testing.T) {
 	type fields struct {
 		T      float64
-		Object Shaper
+		Object Shape
 	}
 	type args struct {
 		r Ray

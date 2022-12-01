@@ -17,7 +17,7 @@ type Scene struct {
 	Camera      Camera
 	Description SceneDescription
 	Light       Light
-	Objects     []Shaper
+	Objects     []Shape
 }
 
 func LoadSceneFile(path string) (*Scene, error) {

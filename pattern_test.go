@@ -283,8 +283,8 @@ func TestCheckersPattern_ColorAt(t *testing.T) {
 
 func TestPatternAtShape(t *testing.T) {
 	type args struct {
-		patterny   Patterny
-		shape      Shaper
+		patterny   Pattern
+		shape      Shape
 		worldPoint Tuple
 	}
 	tests := []struct {

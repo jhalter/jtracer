@@ -6,7 +6,7 @@ import (
 )
 
 type World struct {
-	Objects []Shaper
+	Objects []Shape
 	Light   Light
 }
 
@@ -31,7 +31,7 @@ func DefaultWorld() World {
 	s2.SetTransform(Scaling(0.5, 0.5, 0.5))
 
 	return World{
-		Objects: []Shaper{s1, s2},
+		Objects: []Shape{s1, s2},
 		Light: NewPointLight(
 			*NewPoint(-10, 10, -10),
 			Color{1, 1, 1},

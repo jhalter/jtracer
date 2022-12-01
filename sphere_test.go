@@ -117,8 +117,8 @@ func TestSphere_Intersects(t *testing.T) {
 		//		},
 		//	},
 		//	want: Intersections{
-		//		{T: 3, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
-		//		{T: 7, Object: Sphere{ID: 1, Shape: Shape{Transform: Scaling(2, 2, 2)}}},
+		//		{T: 3, Object: Sphere{ID: 1, AbstractShape: AbstractShape{Transform: Scaling(2, 2, 2)}}},
+		//		{T: 7, Object: Sphere{ID: 1, AbstractShape: AbstractShape{Transform: Scaling(2, 2, 2)}}},
 		//	},
 		//},
 		//{
@@ -139,7 +139,7 @@ func TestSphere_Intersects(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := Sphere{
-				Shape: Shape{
+				AbstractShape: AbstractShape{
 					ID: tt.fields.id,
 				},
 			}
@@ -221,7 +221,7 @@ func TestSphere_NormalAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := Sphere{
-				Shape: Shape{
+				AbstractShape: AbstractShape{
 					ID: tt.fields.id,
 				},
 			}

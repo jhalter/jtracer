@@ -8,7 +8,7 @@ import (
 func TestPlane_NormalAt(t *testing.T) {
 	type fields struct {
 		ID    int
-		Shape Shape
+		Shape AbstractShape
 	}
 	type args struct {
 		in0 Tuple
@@ -23,7 +23,7 @@ func TestPlane_NormalAt(t *testing.T) {
 			name: "the normal of a plane is constant everywhere",
 			fields: fields{
 				ID:    0,
-				Shape: Shape{},
+				Shape: AbstractShape{},
 			},
 			args: args{
 				*NewPoint(0, 0, 0),
@@ -34,7 +34,7 @@ func TestPlane_NormalAt(t *testing.T) {
 			name: "the normal of a plane is constant everywhere",
 			fields: fields{
 				ID:    0,
-				Shape: Shape{},
+				Shape: AbstractShape{},
 			},
 			args: args{
 				*NewPoint(10, 0, -10),
@@ -45,7 +45,7 @@ func TestPlane_NormalAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := Plane{
-				Shape: tt.fields.Shape,
+				AbstractShape: tt.fields.Shape,
 			}
 			if got := p.LocalNormalAt(tt.args.in0); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NormalAt() = %v, want %v", got, tt.want)
@@ -57,7 +57,7 @@ func TestPlane_NormalAt(t *testing.T) {
 func TestPlane_Intersects(t *testing.T) {
 	type fields struct {
 		ID    int
-		Shape Shape
+		Shape AbstractShape
 	}
 	type args struct {
 		r Ray
@@ -71,7 +71,7 @@ func TestPlane_Intersects(t *testing.T) {
 		{
 			name: "intersect with a ray parallel to the plane",
 			fields: fields{
-				Shape: Shape{},
+				Shape: AbstractShape{},
 			},
 			args: args{
 				Ray{
@@ -84,7 +84,7 @@ func TestPlane_Intersects(t *testing.T) {
 		{
 			name: "intersect with a coplanar ray",
 			fields: fields{
-				Shape: Shape{},
+				Shape: AbstractShape{},
 			},
 			args: args{
 				Ray{
@@ -97,7 +97,7 @@ func TestPlane_Intersects(t *testing.T) {
 		{
 			name: "a ray intersecting a plane from above",
 			fields: fields{
-				Shape: Shape{
+				Shape: AbstractShape{
 					ID: 1,
 				},
 			},
@@ -118,7 +118,7 @@ func TestPlane_Intersects(t *testing.T) {
 			name: "a ray intersecting a plane from below",
 			fields: fields{
 				ID:    1,
-				Shape: Shape{ID: 1},
+				Shape: AbstractShape{ID: 1},
 			},
 			args: args{
 				Ray{
