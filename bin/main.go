@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 )
 import _ "net/http/pprof"
@@ -28,6 +27,7 @@ type model struct {
 	termWidth    int
 	termHeight   int
 	startTime    time.Time
+	endTime      time.Time
 	outputFile   string
 	scene        *jtracer.Scene
 	progressChan chan float64
@@ -55,17 +55,16 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.termWidth = msg.Width
 		m.termHeight = msg.Height
-		m.progress.Width = msg.Width - padding*2 - 4
-		if m.progress.Width > maxWidth {
-			m.progress.Width = maxWidth
-		}
+		m.progress.Width = msg.Width - 25
+		//if m.progress.Width > maxWidth {
+		//	m.progress.Width = maxWidth
+		//}
 		return m, nil
 
 	case tickMsg:
 		if m.percent >= 1.0 {
 			m.percent = 1.0
-			time.Sleep(5 * time.Second)
-			return m, tea.Quit
+			m.endTime = time.Now()
 		}
 		return m, tickCmd()
 	default:
@@ -81,29 +80,72 @@ var (
 const template = `
 Input File:  %v
 Output File: %v
-Resolution: %v x %v
+Resolution:  %v x %v`
+
+const doneTemplate = `
+DONE
 `
 
 const background = " △ ▢ ◯"
 
-func (m *model) View() string {
-	title := lipgloss.NewStyle().Width(m.termWidth - 20).Align(lipgloss.Center).Render(m.scene.Description.Title)
-	details := lipgloss.NewStyle().Width(60).Align(lipgloss.Left).
-		Render(fmt.Sprintf(template, m.scene.InputFile, m.outputFile, m.scene.Camera.Vsize, m.scene.Camera.Hsize))
-	ui := lipgloss.JoinVertical(lipgloss.Center, title, details)
+func (m *model) doneDialog() string {
+	ui := lipgloss.JoinVertical(
+		lipgloss.Center,
+		lipgloss.NewStyle().Bold(true).Width(m.termWidth-20).Align(lipgloss.Center).Render("🎉 Render complete!"),
+		lipgloss.NewStyle().Width(m.termWidth-20).Align(lipgloss.Center).Render(m.scene.Description.Title),
+		lipgloss.NewStyle().
+			MarginLeft(1).
+			MarginRight(5).
+			Padding(0, 1).
+			Italic(true).
+			Foreground(lipgloss.Color("#FFF7DB")).
+			SetString("Lip Gloss").Background(lipgloss.Color("#14F9D5")).Render("Render Complete!"),
+		lipgloss.NewStyle().Width(60).Align(lipgloss.Left).
+			Render(fmt.Sprintf(template, m.scene.InputFile, m.outputFile, m.scene.Camera.Vsize, m.scene.Camera.Hsize)),
+	)
 
-	elapsedTime := time.Now().Sub(m.startTime).Round(1 * time.Second)
-	pad := strings.Repeat(" ", padding)
-	paddedProgress := pad + m.progress.ViewAs(m.percent) + pad + "\n"
-	paddedProgress += lipgloss.NewStyle().Width(m.termWidth - 20).Align(lipgloss.Left).
-		Render(fmt.Sprintf("\nElapsed: %v", elapsedTime))
+	dialogBoxStyle := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("46")).
+		Padding(1, 0).
+		BorderTop(true).
+		BorderLeft(true).
+		BorderRight(true).
+		BorderBottom(true)
+
+	return lipgloss.Place(m.termWidth, m.termHeight,
+		lipgloss.Center, lipgloss.Center,
+		dialogBoxStyle.Render(ui),
+		lipgloss.WithWhitespaceChars(background),
+		lipgloss.WithWhitespaceForeground(subtle),
+	)
+}
+
+func (m *model) progressDialog() string {
+	ui := lipgloss.JoinVertical(
+		lipgloss.Center,
+		lipgloss.NewStyle().
+			Width(m.termWidth).
+			Align(lipgloss.Left).
+			Bold(true).
+			Render(m.scene.Description.Title),
+		lipgloss.NewStyle().
+			Width(m.termWidth).
+			Align(lipgloss.Left).
+			Render(fmt.Sprintf(template, m.scene.InputFile, m.outputFile, m.scene.Camera.Vsize, m.scene.Camera.Hsize)),
+	)
+
+	paddedProgress := m.progress.ViewAs(m.percent) + "\n"
+	paddedProgress += lipgloss.NewStyle().Width(m.termWidth).Align(lipgloss.Left).
+		Render(fmt.Sprintf("\nElapsed: %v", time.Now().Sub(m.startTime).Round(1*time.Second)))
 
 	ui = lipgloss.JoinVertical(lipgloss.Center, ui, paddedProgress)
 
 	dialogBoxStyle := lipgloss.NewStyle().
+		Width(m.termWidth-20).
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("#874BFD")).
-		Padding(1, 0).
+		Padding(1, 2).
 		BorderTop(true).
 		BorderLeft(true).
 		BorderRight(true).
@@ -116,7 +158,14 @@ func (m *model) View() string {
 		lipgloss.WithWhitespaceForeground(subtle),
 	)
 	return dialog
+}
 
+func (m *model) View() string {
+	if m.percent >= 1.0 {
+		return m.doneDialog()
+	}
+
+	return m.progressDialog()
 }
 
 func tickCmd() tea.Cmd {
@@ -128,7 +177,7 @@ func tickCmd() tea.Cmd {
 func main() {
 	height := flag.Float64("height", -1, "Height of output image")
 	width := flag.Float64("width", -1, "Height of output image")
-	outputFile := flag.String("out", "refraction-and-reflection.png", "Filename of output image")
+	outputFile := flag.String("out", "out.png", "Filename of output image")
 
 	flag.Parse()
 
@@ -159,18 +208,15 @@ func main() {
 		err = canvas.SavePNG(*outputFile)
 	}()
 
-	prog := progress.New(progress.WithDefaultGradient())
-
 	_, err = tea.NewProgram(&model{
 		startTime:    time.Now(),
 		outputFile:   *outputFile,
 		scene:        scene,
-		progress:     prog,
+		progress:     progress.New(progress.WithDefaultGradient()),
 		progressChan: scene.Camera.Progress,
 	}, tea.WithAltScreen()).Run()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("🖼  Render complete: %v\n", *outputFile)
 }
