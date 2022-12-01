@@ -27,7 +27,8 @@ type model struct {
 	termWidth    int
 	termHeight   int
 	startTime    time.Time
-	endTime      time.Time
+	endTime      *time.Time
+	duration     time.Duration
 	outputFile   string
 	scene        *jtracer.Scene
 	progressChan chan float64
@@ -62,9 +63,11 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tickMsg:
-		if m.percent >= 1.0 {
+		if m.percent >= 1.0 && m.endTime == nil {
+			t := time.Now()
+			m.endTime = &t
 			m.percent = 1.0
-			m.endTime = time.Now()
+			m.duration = time.Now().Sub(m.startTime).Round(1 * time.Second)
 		}
 		return m, tickCmd()
 	default:
@@ -83,37 +86,39 @@ Output File: %v
 Resolution:  %v x %v`
 
 const doneTemplate = `
-DONE
+File: %v
+Render duration: %v
 `
 
 const background = " △ ▢ ◯"
 
 func (m *model) doneDialog() string {
 	ui := lipgloss.JoinVertical(
-		lipgloss.Center,
-		lipgloss.NewStyle().Bold(true).Width(m.termWidth-20).Align(lipgloss.Center).Render("🎉 Render complete!"),
-		lipgloss.NewStyle().Width(m.termWidth-20).Align(lipgloss.Center).Render(m.scene.Description.Title),
+		lipgloss.Left,
 		lipgloss.NewStyle().
-			MarginLeft(1).
-			MarginRight(5).
-			Padding(0, 1).
 			Italic(true).
+			Align(lipgloss.Center).
 			Foreground(lipgloss.Color("#FFF7DB")).
-			SetString("Lip Gloss").Background(lipgloss.Color("#14F9D5")).Render("Render Complete!"),
+			//Background(lipgloss.Color("#F25D94")).
+			Render("Render Complete!"),
 		lipgloss.NewStyle().Width(60).Align(lipgloss.Left).
-			Render(fmt.Sprintf(template, m.scene.InputFile, m.outputFile, m.scene.Camera.Vsize, m.scene.Camera.Hsize)),
+			Render(fmt.Sprintf(doneTemplate, m.outputFile, m.duration)),
+		helpStyle("Press any key to exit"),
 	)
 
 	dialogBoxStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
+		Width(m.termWidth-20).
 		BorderForeground(lipgloss.Color("46")).
-		Padding(1, 0).
+		Padding(1, 2).
 		BorderTop(true).
 		BorderLeft(true).
 		BorderRight(true).
 		BorderBottom(true)
 
-	return lipgloss.Place(m.termWidth, m.termHeight,
+	return lipgloss.Place(
+		m.termWidth,
+		m.termHeight,
 		lipgloss.Center, lipgloss.Center,
 		dialogBoxStyle.Render(ui),
 		lipgloss.WithWhitespaceChars(background),
