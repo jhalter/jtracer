@@ -71,7 +71,10 @@ func TestNewCamera(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewCamera(tt.args.hsize, tt.args.vsize, tt.args.fov); !cmp.Equal(got, tt.want, float64Comparer) {
+			got := NewCamera(tt.args.hsize, tt.args.vsize, tt.args.fov)
+			// TODO: Figure how to test channel equality
+			got.Progress = nil
+			if !cmp.Equal(got, tt.want, float64Comparer) {
 				t.Errorf("NewCamera() = %v, want %v", got, tt.want)
 			}
 		})
