@@ -1,6 +1,8 @@
 package jtracer
 
 import (
+	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"math"
 	"reflect"
 	"testing"
@@ -280,24 +282,25 @@ func TestWorld_ReflectedColor(t *testing.T) {
 			},
 			want: Black,
 		},
-		//	TODO: Figure out why this is failing
-		//
-		//{
-		//	name:   "the reflected color for a reflective material",
-		//	fields: fields(defaultWorldWithReflectivePlane),
-		//	args: args{
-		//		comps: func() Computations {
-		//			i := Intersection{T: math.Sqrt(2), Object: defaultWorldWithReflectivePlane.Objects[2]}
-		//			return i.PrepareComputations(
-		//				NewRay(
-		//					*NewPoint(0, 0, -3),
-		//					*NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
-		//				), nil,
-		//			)
-		//		}(),
-		//	},
-		//	want: Color{0.19032, 0.2379, 0.14274},
-		//},
+		{
+			name:   "the reflected color for a reflective material",
+			fields: fields(defaultWorldWithReflectivePlane),
+			args: args{
+				comps: func() Computations {
+					i := Intersection{T: math.Sqrt(2), Object: defaultWorldWithReflectivePlane.Objects[2]}
+					xs := Intersections{i}
+
+					return i.PrepareComputations(
+						NewRay(
+							*NewPoint(0, 0, -3),
+							*NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+						), xs,
+					)
+				}(),
+				remaining: 1,
+			},
+			want: Color{0.190332, 0.23791, 0.14274},
+		},
 		{
 			name:   "the reflected color at the maximum recursive depth",
 			fields: fields(defaultWorldWithReflectivePlane),
@@ -320,7 +323,8 @@ func TestWorld_ReflectedColor(t *testing.T) {
 				Objects: tt.fields.Objects,
 				Light:   tt.fields.Light,
 			}
-			if got := w.ReflectedColor(tt.args.comps, 0); !reflect.DeepEqual(got, tt.want) {
+			if got := w.ReflectedColor(tt.args.comps, tt.args.remaining); !cmp.Equal(got, tt.want, float64Comparer) {
+				fmt.Println(cmp.Diff(got, tt.want, float64Comparer))
 				t.Errorf("ReflectedColor() = %v, want %v", got, tt.want)
 			}
 		})
