@@ -1,6 +1,7 @@
 package jtracer
 
 import (
+	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"math"
 	"reflect"
@@ -76,7 +77,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 		name string
 		m    Matrix
 		args args
-		want Tuple
+		want *Tuple
 	}{
 		{
 			name: "a matrix multiplied by a tuple",
@@ -89,7 +90,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				Tuple{1, 2, 3, 1},
 			},
-			want: Tuple{18, 24, 33, 1},
+			want: &Tuple{18, 24, 33, 1},
 		},
 		{
 			name: "the identity matrix multiplied by a tuple",
@@ -97,7 +98,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				Tuple{1, 2, 3, 1},
 			},
-			want: Tuple{1, 2, 3, 1},
+			want: &Tuple{1, 2, 3, 1},
 		},
 		{
 			name: "multiplying a point by a translation matrix",
@@ -105,7 +106,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(-3, 4, 5),
 			},
-			want: Tuple{2, 1, 7, 1},
+			want: &Tuple{2, 1, 7, 1},
 		},
 		{
 			name: "multiplying a point by the inverse of a translation matrix",
@@ -116,7 +117,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(-3, 4, 5),
 			},
-			want: Tuple{-8, 7, 3, 1},
+			want: &Tuple{-8, 7, 3, 1},
 		},
 		{
 			name: "translation does not affect vectors",
@@ -124,7 +125,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewVector(-3, 4, 5),
 			},
-			want: Tuple{-3, 4, 5, 0},
+			want: &Tuple{-3, 4, 5, 0},
 		},
 		{
 			name: "a scaling matrix applied to a point",
@@ -132,7 +133,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(-4, 6, 8),
 			},
-			want: Tuple{-8, 18, 32, 1},
+			want: &Tuple{-8, 18, 32, 1},
 		},
 		{
 			name: "a scaling matrix applied to a vector",
@@ -140,7 +141,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewVector(-4, 6, 8),
 			},
-			want: Tuple{-8, 18, 32, 0},
+			want: &Tuple{-8, 18, 32, 0},
 		},
 		{
 			name: "multiplying by  by the inverse of a scaling matrix",
@@ -151,7 +152,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewVector(-4, 6, 8),
 			},
-			want: Tuple{-2, 2, 2, 0},
+			want: &Tuple{-2, 2, 2, 0},
 		},
 		{
 			name: "reflection is scaling by a negative value",
@@ -159,7 +160,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: Tuple{-2, 3, 4, 1},
+			want: &Tuple{-2, 3, 4, 1},
 		},
 		{
 			name: "rotating a point half quarter around the x-axis",
@@ -167,7 +168,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 1, 0),
 			},
-			want: *NewPoint(0, math.Sqrt2/2, math.Sqrt2/2),
+			want: NewPoint(0, math.Sqrt2/2, math.Sqrt2/2),
 		},
 		{
 			name: "rotating a point full quarter around the x-axis",
@@ -175,7 +176,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 1, 0),
 			},
-			want: *NewPoint(0, 0, 1),
+			want: NewPoint(0, 0, 1),
 		},
 		{
 			name: "the inverse of an x-rotation rotates in the opposite direction",
@@ -186,7 +187,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 1, 0),
 			},
-			want: *NewPoint(0, math.Sqrt2/2, -math.Sqrt2/2),
+			want: NewPoint(0, math.Sqrt2/2, -math.Sqrt2/2),
 		},
 		{
 			name: "rotating a point half quarter around the y-axis",
@@ -194,7 +195,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 0, 1),
 			},
-			want: *NewPoint(math.Sqrt2/2, 0, math.Sqrt2/2),
+			want: NewPoint(math.Sqrt2/2, 0, math.Sqrt2/2),
 		},
 		{
 			name: "rotating a point full quarter around the y-axis",
@@ -202,7 +203,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 0, 1),
 			},
-			want: *NewPoint(1, 0, 0),
+			want: NewPoint(1, 0, 0),
 		},
 		{
 			name: "rotating a point half quarter around the z-axis",
@@ -210,7 +211,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 1, 0),
 			},
-			want: *NewPoint(-math.Sqrt2/2, math.Sqrt2/2, 0),
+			want: NewPoint(-math.Sqrt2/2, math.Sqrt2/2, 0),
 		},
 		{
 			name: "rotating a point full quarter around the z-axis",
@@ -218,7 +219,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(0, 1, 0),
 			},
-			want: *NewPoint(-1, 0, 0),
+			want: NewPoint(-1, 0, 0),
 		},
 		{
 			name: "a shearing transformation moves x in proportion to y",
@@ -226,7 +227,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: *NewPoint(5, 3, 4),
+			want: NewPoint(5, 3, 4),
 		},
 		{
 			name: "a shearing transformation moves x in proportion to z",
@@ -234,7 +235,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: *NewPoint(6, 3, 4),
+			want: NewPoint(6, 3, 4),
 		},
 		{
 			name: "a shearing transformation moves y in proportion to x",
@@ -242,7 +243,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: *NewPoint(2, 5, 4),
+			want: NewPoint(2, 5, 4),
 		},
 		{
 			name: "a shearing transformation moves y in proportion to z",
@@ -250,7 +251,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: *NewPoint(2, 7, 4),
+			want: NewPoint(2, 7, 4),
 		},
 		{
 			name: "a shearing transformation moves z in proportion to x",
@@ -258,7 +259,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: *NewPoint(2, 3, 6),
+			want: NewPoint(2, 3, 6),
 		},
 		{
 			name: "a shearing transformation moves z in proportion to y",
@@ -266,7 +267,7 @@ func TestMatrix_MultiplyByTuple(t *testing.T) {
 			args: args{
 				*NewPoint(2, 3, 4),
 			},
-			want: *NewPoint(2, 3, 7),
+			want: NewPoint(2, 3, 7),
 		},
 	}
 	for _, tt := range tests {
@@ -335,7 +336,7 @@ func TestMatrix_Submatrix(t *testing.T) {
 		{
 			name: "a submatrix of a 3x3 matrix is a 2x2 matrix",
 			m: Matrix{
-				{1, 5, 0},
+				{1, 5, 1},
 				{-3, 2, 7},
 				{0, 6, -3},
 			},
@@ -363,6 +364,7 @@ func TestMatrix_Submatrix(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			fmt.Println("hai")
 			if got := tt.m.Submatrix(tt.args.row, tt.args.col); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Submatrix() = %v, want %v", got, tt.want)
 			}

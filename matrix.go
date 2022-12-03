@@ -24,7 +24,7 @@ func (m Matrix) Multiply(m2 Matrix) Matrix {
 	return m3
 }
 
-func (m Matrix) MultiplyByTuple(t Tuple) Tuple {
+func (m Matrix) MultiplyByTuple(t Tuple) *Tuple {
 	var result []float64
 	for row := 0; row < len(m); row++ {
 		result = append(
@@ -36,7 +36,7 @@ func (m Matrix) MultiplyByTuple(t Tuple) Tuple {
 		)
 	}
 
-	return Tuple{X: result[0], Y: result[1], Z: result[2], W: result[3]}
+	return &Tuple{X: result[0], Y: result[1], Z: result[2], W: result[3]}
 }
 
 func (m Matrix) Determinant() float64 {
@@ -54,12 +54,11 @@ func (m Matrix) Determinant() float64 {
 
 func (m Matrix) Submatrix(row, col int) Matrix {
 	out := make(Matrix, len(m)-1)
-
 	rr := 0
 	// for each row in original matrix
 	for i := 0; i < len(m); i++ {
-		if rr == len(out) {
-			return out
+		if i == row {
+			continue
 		}
 
 		// create new output row
@@ -70,21 +69,16 @@ func (m Matrix) Submatrix(row, col int) Matrix {
 		for j := 0; j < len(m[0]); j++ {
 			if j != col {
 				out[rr][rc] = m[i][j]
-
 				rc += 1
 			}
 		}
-
-		if i != row && rr < len(out) {
-			rr += 1
-		}
+		rr += 1
 	}
 	return out
 }
 
 func (m Matrix) Minor(row, col int) float64 {
-	sub := m.Submatrix(row, col)
-	return sub.Determinant()
+	return m.Submatrix(row, col).Determinant()
 }
 
 func (m Matrix) Cofactor(row, col int) float64 {

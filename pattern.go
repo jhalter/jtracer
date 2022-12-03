@@ -44,9 +44,9 @@ type StripePattern struct {
 
 func PatternAtShape(patterny Pattern, shape Shape, worldPoint Tuple) Color {
 	objectPoint := shape.GetInverse().MultiplyByTuple(worldPoint)
-	patternPoint := patterny.GetInverse().MultiplyByTuple(objectPoint)
+	patternPoint := patterny.GetInverse().MultiplyByTuple(*objectPoint)
 
-	return patterny.ColorAt(patternPoint)
+	return patterny.ColorAt(*patternPoint)
 }
 
 func NewTestPattern() *TestPattern {

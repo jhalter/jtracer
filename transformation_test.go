@@ -53,12 +53,12 @@ func TestTransformationsAreAppliedInSequence(t *testing.T) {
 		t.Fail()
 	}
 
-	p3 := b.MultiplyByTuple(p2)
+	p3 := b.MultiplyByTuple(*p2)
 	if !p3.Equals(NewPoint(5, -5, 0)) {
 		t.Fail()
 	}
 
-	p4 := c.MultiplyByTuple(p3)
+	p4 := c.MultiplyByTuple(*p3)
 	if !p4.Equals(NewPoint(15, 0, 7)) {
 		t.Fail()
 	}

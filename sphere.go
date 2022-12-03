@@ -78,7 +78,7 @@ func Intersects(s Shape, r Ray) Intersections {
 
 func NormalAt(s Shape, worldPoint Tuple) Tuple {
 	localPoint := s.GetInverse().MultiplyByTuple(worldPoint)
-	objectNormal := s.LocalNormalAt(localPoint)
+	objectNormal := s.LocalNormalAt(*localPoint)
 	worldNormal := s.GetInverseTranspose().MultiplyByTuple(objectNormal)
 	worldNormal.W = 0
 

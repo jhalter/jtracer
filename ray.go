@@ -14,7 +14,7 @@ func (r *Ray) Position(t float64) *Tuple {
 
 func (r *Ray) Transform(m Matrix) Ray {
 	return Ray{
-		m.MultiplyByTuple(r.Origin),
-		m.MultiplyByTuple(r.Direction),
+		*m.MultiplyByTuple(r.Origin),
+		*m.MultiplyByTuple(r.Direction),
 	}
 }

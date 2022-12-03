@@ -56,9 +56,9 @@ func (c *Camera) RayForPixel(px, py float64) Ray {
 
 	pixel := c.Transform.Inverse().MultiplyByTuple(*NewPoint(worldX, worldY, -1))
 	origin := c.Transform.Inverse().MultiplyByTuple(*NewPoint(0, 0, 0))
-	direction := pixel.Subtract(&origin).Normalize()
+	direction := pixel.Subtract(origin).Normalize()
 
-	return Ray{origin, *direction}
+	return Ray{*origin, *direction}
 }
 
 const RendererCount = 8
