@@ -29,8 +29,8 @@ func TestSphere_Intersects(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 0, -5),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, -5),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{
@@ -46,8 +46,8 @@ func TestSphere_Intersects(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 1, -5),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 1, -5),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{
@@ -63,8 +63,8 @@ func TestSphere_Intersects(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 2, -5),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 2, -5),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{},
@@ -77,8 +77,8 @@ func TestSphere_Intersects(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 0, 0),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, 0),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{
@@ -94,8 +94,8 @@ func TestSphere_Intersects(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 0, 5),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, 5),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{

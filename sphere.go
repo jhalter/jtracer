@@ -50,7 +50,7 @@ func (s *Sphere) LocalIntersect(ray Ray) Intersections {
 
 	sphereToRay := ray.Origin.Subtract(NewPoint(0, 0, 0))
 
-	a := ray.Direction.Dot(&ray.Direction)
+	a := ray.Direction.Dot(ray.Direction)
 	b := 2 * ray.Direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
 

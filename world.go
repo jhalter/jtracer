@@ -101,7 +101,7 @@ func (w World) IsShadowed(p Tuple) bool {
 	distance := v.Magnitude()
 	direction := v.Normalize()
 
-	r := NewRay(p, *direction)
+	r := NewRay(&p, direction)
 	intersections := w.Intersect(r)
 
 	h := intersections.Hit()
@@ -119,7 +119,7 @@ func (w World) ReflectedColor(comps Computations, remaining int) Color {
 		return Black
 	}
 
-	reflectRay := Ray{Origin: comps.OverPoint, Direction: comps.Reflectv}
+	reflectRay := Ray{Origin: &comps.OverPoint, Direction: &comps.Reflectv}
 	color := w.ColorAt(reflectRay, remaining-1)
 	//
 	//spew.Dump("OrigRay", NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2))
@@ -161,11 +161,9 @@ func (w World) RefractedColor(comps Computations, remaining int) Color {
 	baz1 := comps.Normalv.Multiply((nRatio * cosI) - cosT)
 	baz2 := comps.Eyev.Multiply(nRatio)
 
-	direction := baz1.Subtract(baz2)
-
 	// Create the refracted ray
 	//refract_ray ← ray(comps.under_point, direction)
-	refractRay := NewRay(comps.UnderPoint, *direction)
+	refractRay := NewRay(&comps.UnderPoint, baz1.Subtract(baz2))
 
 	//
 	//# Find the color of the refracted ray, making sure to multiply
@@ -175,11 +173,6 @@ func (w World) RefractedColor(comps Computations, remaining int) Color {
 	//         comps.object.material.transparency
 
 	color := w.ColorAt(refractRay, remaining-1)
-	//spew.Dump("colorAt", comps.Object.GetID(), color)
-	color = *color.MultiplyByScalar(comps.Object.GetMaterial().Transparency)
 
-	//spew.Dump("refractedColor", color)
-
-	return color
-
+	return *color.MultiplyByScalar(comps.Object.GetMaterial().Transparency)
 }

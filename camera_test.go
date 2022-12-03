@@ -117,8 +117,8 @@ func TestCamera_RayForPixel(t *testing.T) {
 				py: 50,
 			},
 			want: Ray{
-				Origin:    *NewPoint(0, 0, 0),
-				Direction: *NewVector(0, 0, -1),
+				Origin:    NewPoint(0, 0, 0),
+				Direction: NewVector(0, 0, -1),
 			},
 		},
 		{
@@ -137,8 +137,8 @@ func TestCamera_RayForPixel(t *testing.T) {
 				py: 0,
 			},
 			want: Ray{
-				Origin:    *NewPoint(0, 0, 0),
-				Direction: *NewVector(0.66519, 0.33259, -0.66851),
+				Origin:    NewPoint(0, 0, 0),
+				Direction: NewVector(0.66519, 0.33259, -0.66851),
 			},
 		},
 		{
@@ -157,8 +157,8 @@ func TestCamera_RayForPixel(t *testing.T) {
 				py: 50,
 			},
 			want: Ray{
-				Origin:    *NewPoint(0, 2, -5),
-				Direction: *NewVector(math.Sqrt(2)/2, 0, -math.Sqrt(2)/2),
+				Origin:    NewPoint(0, 2, -5),
+				Direction: NewVector(math.Sqrt(2)/2, 0, -math.Sqrt(2)/2),
 			},
 		},
 	}

@@ -7,8 +7,8 @@ import (
 
 func TestNewRay(t *testing.T) {
 	type args struct {
-		origin    Tuple
-		direction Tuple
+		origin    *Tuple
+		direction *Tuple
 	}
 	tests := []struct {
 		name string
@@ -18,12 +18,12 @@ func TestNewRay(t *testing.T) {
 		{
 			name: "creating and querying a ray",
 			args: args{
-				origin:    *NewPoint(1, 2, 3),
-				direction: *NewVector(4, 5, 6),
+				origin:    NewPoint(1, 2, 3),
+				direction: NewVector(4, 5, 6),
 			},
 			want: Ray{
-				Origin:    Tuple{1, 2, 3, 1},
-				Direction: Tuple{4, 5, 6, 0},
+				Origin:    &Tuple{1, 2, 3, 1},
+				Direction: &Tuple{4, 5, 6, 0},
 			},
 		},
 	}
@@ -38,8 +38,8 @@ func TestNewRay(t *testing.T) {
 
 func TestRay_Position(t *testing.T) {
 	type fields struct {
-		Origin    Tuple
-		Direction Tuple
+		Origin    *Tuple
+		Direction *Tuple
 	}
 	type args struct {
 		t float64
@@ -53,8 +53,8 @@ func TestRay_Position(t *testing.T) {
 		{
 			name: "computing a point from a distance",
 			fields: fields{
-				Origin:    *NewPoint(2, 3, 4),
-				Direction: *NewVector(1, 0, 0),
+				Origin:    NewPoint(2, 3, 4),
+				Direction: NewVector(1, 0, 0),
 			},
 			args: args{0},
 			want: NewPoint(2, 3, 4),
@@ -62,8 +62,8 @@ func TestRay_Position(t *testing.T) {
 		{
 			name: "computing a point from a distance",
 			fields: fields{
-				Origin:    *NewPoint(2, 3, 4),
-				Direction: *NewVector(1, 0, 0),
+				Origin:    NewPoint(2, 3, 4),
+				Direction: NewVector(1, 0, 0),
 			},
 			args: args{1},
 			want: NewPoint(3, 3, 4),
@@ -71,8 +71,8 @@ func TestRay_Position(t *testing.T) {
 		{
 			name: "computing a point from a distance",
 			fields: fields{
-				Origin:    *NewPoint(2, 3, 4),
-				Direction: *NewVector(1, 0, 0),
+				Origin:    NewPoint(2, 3, 4),
+				Direction: NewVector(1, 0, 0),
 			},
 			args: args{-1},
 			want: NewPoint(1, 3, 4),
@@ -80,8 +80,8 @@ func TestRay_Position(t *testing.T) {
 		{
 			name: "computing a point from a distance",
 			fields: fields{
-				Origin:    *NewPoint(2, 3, 4),
-				Direction: *NewVector(1, 0, 0),
+				Origin:    NewPoint(2, 3, 4),
+				Direction: NewVector(1, 0, 0),
 			},
 			args: args{2.5},
 			want: NewPoint(4.5, 3, 4),
@@ -102,8 +102,8 @@ func TestRay_Position(t *testing.T) {
 
 func TestRay_Transform(t *testing.T) {
 	type fields struct {
-		Origin    Tuple
-		Direction Tuple
+		Origin    *Tuple
+		Direction *Tuple
 	}
 	type args struct {
 		m Matrix
@@ -117,25 +117,25 @@ func TestRay_Transform(t *testing.T) {
 		{
 			name: "translating a ray",
 			fields: fields{
-				Origin:    *NewPoint(1, 2, 3),
-				Direction: *NewVector(0, 1, 0),
+				Origin:    NewPoint(1, 2, 3),
+				Direction: NewVector(0, 1, 0),
 			},
 			args: args{m: NewTranslation(3, 4, 5)},
 			want: Ray{
-				Origin:    *NewPoint(4, 6, 8),
-				Direction: *NewVector(0, 1, 0),
+				Origin:    NewPoint(4, 6, 8),
+				Direction: NewVector(0, 1, 0),
 			},
 		},
 		{
 			name: "scaling a ray",
 			fields: fields{
-				Origin:    *NewPoint(1, 2, 3),
-				Direction: *NewVector(0, 1, 0),
+				Origin:    NewPoint(1, 2, 3),
+				Direction: NewVector(0, 1, 0),
 			},
 			args: args{m: Scaling(2, 3, 4)},
 			want: Ray{
-				Origin:    *NewPoint(2, 6, 12),
-				Direction: *NewVector(0, 3, 0),
+				Origin:    NewPoint(2, 6, 12),
+				Direction: NewVector(0, 3, 0),
 			},
 		},
 	}

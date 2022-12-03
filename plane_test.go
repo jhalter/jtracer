@@ -75,8 +75,8 @@ func TestPlane_Intersects(t *testing.T) {
 			},
 			args: args{
 				Ray{
-					Origin:    *NewPoint(0, 10, 0),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 10, 0),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{},
@@ -88,8 +88,8 @@ func TestPlane_Intersects(t *testing.T) {
 			},
 			args: args{
 				Ray{
-					Origin:    *NewPoint(0, 0, 0),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, 0),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{},
@@ -103,8 +103,8 @@ func TestPlane_Intersects(t *testing.T) {
 			},
 			args: args{
 				Ray{
-					Origin:    *NewPoint(0, 1, 0),
-					Direction: *NewVector(0, -1, 0),
+					Origin:    NewPoint(0, 1, 0),
+					Direction: NewVector(0, -1, 0),
 				},
 			},
 			want: Intersections{
@@ -122,8 +122,8 @@ func TestPlane_Intersects(t *testing.T) {
 			},
 			args: args{
 				Ray{
-					Origin:    *NewPoint(0, -1, 0),
-					Direction: *NewVector(0, 1, 0),
+					Origin:    NewPoint(0, -1, 0),
+					Direction: NewVector(0, 1, 0),
 				},
 			},
 			want: Intersections{

@@ -30,8 +30,8 @@ func TestWorld_Intersect(t *testing.T) {
 			fields: fields(dw),
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 0, -5),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, -5),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Intersections{
@@ -98,8 +98,8 @@ func TestWorld_ShadeHit(t *testing.T) {
 						Object: dw.Objects[0],
 					}
 					return i.PrepareComputations(Ray{
-						Origin:    *NewPoint(0, 0, -5),
-						Direction: *NewVector(0, 0, 1),
+						Origin:    NewPoint(0, 0, -5),
+						Direction: NewVector(0, 0, 1),
 					}, nil)
 				}(),
 			},
@@ -125,8 +125,8 @@ func TestWorld_ShadeHit(t *testing.T) {
 						Object: s1,
 					}
 					return i.PrepareComputations(Ray{
-						Origin:    *NewPoint(0, 0, 5),
-						Direction: *NewVector(0, 0, 1),
+						Origin:    NewPoint(0, 0, 5),
+						Direction: NewVector(0, 0, 1),
 					}, nil)
 				}(),
 			},
@@ -152,8 +152,8 @@ func TestWorld_ShadeHit(t *testing.T) {
 						Object: s1,
 					}
 					return i.PrepareComputations(Ray{
-						Origin:    *NewPoint(0, 0, 5),
-						Direction: *NewVector(0, 0, 1),
+						Origin:    NewPoint(0, 0, 5),
+						Direction: NewVector(0, 0, 1),
 					}, nil)
 				}(),
 			},
@@ -275,8 +275,8 @@ func TestWorld_ReflectedColor(t *testing.T) {
 
 					i := Intersection{T: 1, Object: shape}
 					return i.PrepareComputations(NewRay(
-						*NewPoint(0, 0, 0),
-						*NewVector(0, 0, 1),
+						NewPoint(0, 0, 0),
+						NewVector(0, 0, 1),
 					), nil)
 				}(),
 			},
@@ -292,8 +292,8 @@ func TestWorld_ReflectedColor(t *testing.T) {
 
 					return i.PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, -3),
-							*NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+							NewPoint(0, 0, -3),
+							NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
 						), xs,
 					)
 				}(),
@@ -309,8 +309,8 @@ func TestWorld_ReflectedColor(t *testing.T) {
 				comps: func() Computations {
 					i := Intersection{T: math.Sqrt(2), Object: defaultWorldWithReflectivePlane.Objects[2]}
 					return i.PrepareComputations(NewRay(
-						*NewPoint(0, 0, -3),
-						*NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+						NewPoint(0, 0, -3),
+						NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
 					), nil)
 				}(),
 			},
@@ -403,8 +403,8 @@ func TestWorld_RefractedColor(t *testing.T) {
 					}
 					return xs[0].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, -5),
-							*NewVector(0, 0, 1),
+							NewPoint(0, 0, -5),
+							NewVector(0, 0, 1),
 						),
 						xs,
 					)
@@ -458,8 +458,8 @@ func TestWorld_RefractedColor(t *testing.T) {
 					}
 					return xs[0].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, -5),
-							*NewVector(0, 0, 1),
+							NewPoint(0, 0, -5),
+							NewVector(0, 0, 1),
 						),
 						xs,
 					)
@@ -496,8 +496,8 @@ func TestWorld_RefractedColor(t *testing.T) {
 					}
 					return xs[1].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, math.Sqrt(2)/2),
-							*NewVector(0, 1, 0),
+							NewPoint(0, 0, math.Sqrt(2)/2),
+							NewVector(0, 1, 0),
 						),
 						xs,
 					)

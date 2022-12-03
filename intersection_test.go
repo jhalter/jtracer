@@ -108,8 +108,8 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 0, -5),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, -5),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Computations{
@@ -133,8 +133,8 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 0, 0),
-					Direction: *NewVector(0, 0, 1),
+					Origin:    NewPoint(0, 0, 0),
+					Direction: NewVector(0, 0, 1),
 				},
 			},
 			want: Computations{
@@ -157,8 +157,8 @@ func TestIntersection_PrepareComputations(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 1, -1),
-					Direction: *NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+					Origin:    NewPoint(0, 1, -1),
+					Direction: NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
 				},
 			},
 			want: Computations{
@@ -206,8 +206,8 @@ func TestIntersection_FindingN1AndN2(t *testing.T) {
 	c.Material.RefractiveIndex = 2.5
 
 	r := NewRay(
-		*NewPoint(0, 0, -4),
-		*NewVector(0, 0, 1),
+		NewPoint(0, 0, -4),
+		NewVector(0, 0, 1),
 	)
 	xs := Intersections{
 		{
@@ -284,8 +284,8 @@ func TestIntersection_PrecomputingReflectionVector(t *testing.T) {
 			},
 			args: args{
 				r: Ray{
-					Origin:    *NewPoint(0, 1, -1),
-					Direction: *NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
+					Origin:    NewPoint(0, 1, -1),
+					Direction: NewVector(0, -math.Sqrt(2)/2, math.Sqrt(2)/2),
 				},
 			},
 			want: *NewVector(0, math.Sqrt(2)/2, math.Sqrt(2)/2),
@@ -332,8 +332,8 @@ func TestSchlick(t *testing.T) {
 
 					return xs[1].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, math.Sqrt(2)/2),
-							*NewVector(0, 1, 0),
+							NewPoint(0, 0, math.Sqrt(2)/2),
+							NewVector(0, 1, 0),
 						),
 						xs,
 					)
@@ -358,8 +358,8 @@ func TestSchlick(t *testing.T) {
 
 					return xs[1].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0, 0),
-							*NewVector(0, 1, 0),
+							NewPoint(0, 0, 0),
+							NewVector(0, 1, 0),
 						),
 						xs,
 					)
@@ -379,8 +379,8 @@ func TestSchlick(t *testing.T) {
 					}
 					return xs[0].PrepareComputations(
 						NewRay(
-							*NewPoint(0, 0.99, -2),
-							*NewVector(0, 0, 1),
+							NewPoint(0, 0.99, -2),
+							NewVector(0, 0, 1),
 						),
 						xs,
 					)
