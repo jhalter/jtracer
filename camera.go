@@ -87,21 +87,15 @@ func (c *Camera) Render(w World) Canvas {
 
 	go func() {
 		for i := 0; i < RendererCount; i++ {
-			chunkSize := c.Vsize / RendererCount
-			yStart := math.Floor(float64(i) * chunkSize)
-			yEnd := math.Ceil(yStart + chunkSize - 1)
-
-			go func() {
+			go func(i int) {
 				defer wg.Done()
-				for y := yStart; y <= yEnd; y++ {
+				for y := i; y < int(c.Vsize); y += RendererCount {
 					yDone <- 1
-					for x := 0.0; x < c.Hsize; x++ {
-						r := c.RayForPixel(x, y)
-						color := w.ColorAt(r, MaxReflections)
-						image.WritePixel(int(x), int(y), &color)
+					for x := 0.0; x <= c.Hsize-1; x++ {
+						image.WritePixel(int(x), y, w.ColorAt(c.RayForPixel(x, float64(y)), MaxReflections))
 					}
 				}
-			}()
+			}(i)
 		}
 
 		wg.Wait()
