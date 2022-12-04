@@ -97,9 +97,7 @@ func (m Matrix) Inverse() Matrix {
 
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m); j++ {
-			c := m.Cofactor(i, j)
-
-			m2[j][i] = c / m.Determinant()
+			m2[j][i] = m.Cofactor(i, j) / m.Determinant()
 		}
 	}
 

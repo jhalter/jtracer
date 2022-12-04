@@ -51,18 +51,18 @@ func (w World) Intersect(r Ray) Intersections {
 	return xs
 }
 
-func (w World) ColorAt(r Ray, remaining int) Color {
+func (w World) ColorAt(r Ray, remaining int) *Color {
 	xs := w.Intersect(r)
 	hit := xs.Hit()
 	if hit == nil {
-		return Black
+		return &Black
 	}
 
 	comps := hit.PrepareComputations(r, xs)
 	return w.ShadeHit(comps, remaining)
 }
 
-func (w World) ShadeHit(comps Computations, remaining int) Color {
+func (w World) ShadeHit(comps Computations, remaining int) *Color {
 	shadowed := w.IsShadowed(comps.OverPoint)
 
 	surface := comps.Object.GetMaterial().Lighting(comps.Object, w.Light, comps.OverPoint, comps.Eyev, comps.Normalv, shadowed)
@@ -86,14 +86,14 @@ func (w World) ShadeHit(comps Computations, remaining int) Color {
 		tmp1 := surface.Add(m1).Add(m2)
 		//spew.Dump(reflectance, reflected, refracted, tmp1)
 
-		return *tmp1
+		return tmp1
 	}
 
 	//
 	//spew.Dump(comps.Object.GetMaterial())
 	//spew.Dump(w.Light)
 
-	return *surface.Add(&reflected).Add(&refracted)
+	return surface.Add(&reflected).Add(&refracted)
 }
 
 func (w World) IsShadowed(p Tuple) bool {
